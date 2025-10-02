@@ -10,6 +10,9 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+/backend/.env
+
+/backend/generated/prisma
 
 # testing
 /frontend/coverage

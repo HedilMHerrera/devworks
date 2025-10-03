@@ -14,6 +14,10 @@ export default function RootLayout({ children }) {
           component="body"
           sx={{
             backgroundColor:"background.main",
+            display:"flex",
+            flexDirection:"column",
+            justifyContent:"center",
+            alignItems:"center"
           }}
         >
           {children}

@@ -1,3 +1,4 @@
+'use client';
 import React from 'react'
 import logo from "./python.svg"
 import { Box, Container, SvgIcon } from '@mui/material'

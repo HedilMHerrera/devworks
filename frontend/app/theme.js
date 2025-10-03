@@ -41,6 +41,9 @@ const palette = {
                     color:"#ffffff",
                 }
             }
+        },
+        MuiLink:{
+            color:"#9fef00",
         }
     }
 

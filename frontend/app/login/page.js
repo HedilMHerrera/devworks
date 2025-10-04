@@ -8,9 +8,36 @@ import KeyIcon from '@mui/icons-material/Key';
 import ButtonCustom from '../components/Button';
 import GoogleIcon from '@mui/icons-material/Google';
 import { ArrowForward } from '@mui/icons-material';
-const page = () => {
+import { login } from './login';
+import { useSnackbar } from 'notistack';
+const Page = () => {
     const [emailText, setEmailText] = useState("");
     const [passText, setPassText] = useState("");
+    const [emailError, setEmailError] = useState("");
+    const [passError, setPassError] = useState("");
+    const { enqueueSnackbar } = useSnackbar();
+    const handleResetMessageError = () => {
+        setEmailError("");
+        setPassError("");
+    }
+const handleLoginPayload = () => {
+    const user = emailText.trim();
+    const password = passText.trim();
+    handleResetMessageError();
+    if(user.length == 0){
+        setEmailError("Debe ingresar el nombre de usuario o email");
+    }
+    if(password.length == 0){
+        setPassError("debe ingresar la contraseña");
+    }
+    if(emailError.length == 0 && passError.length == 0){
+        const { message } = login(user, password);
+        if(message){
+            enqueueSnackbar(message,{variant:"error"});
+        }
+    }
+    
+}
   return (
   <Container
     sx={{
@@ -57,9 +84,24 @@ const page = () => {
         >
             Inicia Sesión en PyCraft
         </Typography>
-        <Input label="Email" Icon={EmailIcon} value={emailText} setValue={setEmailText}  />
-        <Input label="Contrasenia" Icon={KeyIcon} value={passText} setValue={setPassText}  type="pass"/>
-        <ButtonCustom type="primary">
+        <Input 
+            error={ emailError } 
+            label="Email" 
+            Icon={EmailIcon} 
+            value={emailText} 
+            setValue={setEmailText}  
+            setError= { setEmailError }/>
+        <Input 
+            error={ passError }
+            setError={ setPassError } 
+            label="Contrasenia" 
+            Icon={KeyIcon} 
+            value={passText} 
+            setValue={setPassText}  
+            type="pass"/>
+        <ButtonCustom 
+            onClick={ handleLoginPayload }
+            type="primary">
             Iniciar Sesión
         </ButtonCustom>
         <Box
@@ -96,4 +138,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

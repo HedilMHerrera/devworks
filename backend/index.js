@@ -1,6 +1,14 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const PORT = 3001;
+const VIEW_DIRECTION = 'http://localhost:3000'
+
+app.use(cors({
+    origin: VIEW_DIRECTION,
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+}));
+
 const AuthenticacionService = require('./services/authenticationService');
 const UserRepository = require('./repository/userRepository');
 const repository = new UserRepository();
@@ -25,27 +33,12 @@ app.post('/login',async (req,res) => {
             return res.status(500).json( {message:`Internal server error ${e}`});
     }
 });
-/*
-function verifyToken(req, res, next){
-    const header = req.header("Authorization") || "";
-    const token = header.split(" ")[1];
-    if(!token){
-        return res.status(401).json({message:"token not provied"});
-    }
-    try{
-        const payload = jwt.verify(token, secretKey);
-        req.username = payload.username;
-        next();
-    } catch (e){
-        console.log(e)
-        return res.status(403).json({message: "Token no Valido"});
-    }
-}
 
-app.get("/protected", verifyToken, (req, res) => {
+
+/*app.get("/protected", AuthenticacionService.verifyToken, (req, res) => {
     return res.status(200).json({ message: "Acceso correcto" });
-});
-*/
+});*/
+
 app.get('/', (req, res) => {
     res.send('Hello World');
 });

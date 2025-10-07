@@ -1,6 +1,7 @@
 'use client';
 import { Box, Container, Paper, Typography, Link } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useContext, useLayoutEffect, useState } from 'react'
+import { useRouter } from 'next/navigation';
 import SnakeIcon from '../snakeicon/SnakeIcon'
 import Input from '../components/Input'
 import EmailIcon from '@mui/icons-material/Email';
@@ -10,33 +11,48 @@ import GoogleIcon from '@mui/icons-material/Google';
 import { ArrowForward } from '@mui/icons-material';
 import { login } from './login';
 import { useSnackbar } from 'notistack';
+import { SessionContext } from '../context/SessionContext';
+
 const Page = () => {
     const [emailText, setEmailText] = useState("");
     const [passText, setPassText] = useState("");
     const [emailError, setEmailError] = useState("");
     const [passError, setPassError] = useState("");
     const { enqueueSnackbar } = useSnackbar();
+    const [isLoading, setIsLoading] = useState(false);
+    const { setSession } = useContext(SessionContext);
+    const router = useRouter();
+    
     const handleResetMessageError = () => {
         setEmailError("");
         setPassError("");
     }
-const handleLoginPayload = () => {
+const handleLoginPayload = async () => {
+    setIsLoading(true);
     const user = emailText.trim();
     const password = passText.trim();
+    let isValidFields = true;
     handleResetMessageError();
     if(user.length == 0){
         setEmailError("Debe ingresar el nombre de usuario o email");
+        isValidFields = false;
     }
     if(password.length == 0){
         setPassError("debe ingresar la contraseña");
+        isValidFields = false;
     }
-    if(emailError.length == 0 && passError.length == 0){
-        const { message } = login(user, password);
-        if(message){
-            enqueueSnackbar(message,{variant:"error"});
+    if(isValidFields){
+        const { message, success, ...more } = await login(user, password);
+        if(success){
+            enqueueSnackbar("correcto",{variant:"success"});
+            const { data:{ token, user } } = more;
+            setSession(token, user);
+            router.push('/')
+        } else {
+            enqueueSnackbar(message, {variant:"error"});
         }
     }
-    
+    setIsLoading(false)
 }
   return (
   <Container
@@ -101,7 +117,9 @@ const handleLoginPayload = () => {
             type="pass"/>
         <ButtonCustom 
             onClick={ handleLoginPayload }
-            type="primary">
+            type="primary"
+            disabled = { isLoading }
+            >
             Iniciar Sesión
         </ButtonCustom>
         <Box

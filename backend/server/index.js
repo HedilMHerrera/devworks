@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const PORT = 3001;
 const VIEW_DIRECTION = 'http://localhost:3000'
 
 app.use(cors({
@@ -9,8 +8,8 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
 
-const AuthenticacionService = require('./services/authenticationService');
-const UserRepository = require('./repository/userRepository');
+const AuthenticacionService = require('../services/authenticationService');
+const UserRepository = require('../repository/userRepository');
 const repository = new UserRepository();
 app.use(express.json());
 
@@ -42,9 +41,4 @@ app.post('/login',async (req,res) => {
 app.get('/', (req, res) => {
     res.send('Hello World');
 });
-
-
-
-app.listen(PORT, () => {
-    console.log(`server is running on port ${PORT}`)
-});
+module.exports= app;

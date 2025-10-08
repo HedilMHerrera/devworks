@@ -10,3 +10,15 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+main{
+  margin-top: 80px;
+}
+
+hr{
+  margin: 0;
+  padding: 0;
+  font-weight: 100;
+  width: 80%;
+  align-self: center;
+  justify-self: center;
+}

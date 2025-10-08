@@ -1,0 +1,104 @@
+workspace "PyCraft" "Sistema tutorial de aprendizaje con python" {
+
+    !identifiers hierarchical
+
+    model {
+        group "Usuarios" {
+            est = person "Estudiante" "Ve topicos de estudio y realiza practicas"
+            prof = person "Profesor" "Crea un grupo de estudio y realiza seguimiento de estudiantes"
+        }
+
+        ss = softwareSystem "PyCraft" {
+            description "Sistema tutorial para aprendizaje de programacion con Python"
+            tags "Internal"
+            fe = container "FrontEnd" "Pagina Web que provee el material de aprendizaje en video, texto, slide y los ejercicios de laboratorio"{
+                tags "Internal"
+            }
+            be = container "BackEnd" "Permite acceder al material de estudio y laboratorios mediante contenido JSON y multimedia Stream"{
+                tags "Internal"
+            }
+            dl = container "Data Layer" "Gestiona la interaccion con la Base de Datos y sistema de archivos"{
+                tags "Internal"
+            }
+            
+            db = container "Database Schema" {
+                tags "Database"
+            }
+        }
+
+        youtube = softwareSystem "YouTube" "Sistema de almacenamiento y reproductor de videos" {
+            tags "External"
+        }
+
+        firebase = softwareSystem "Firebase" "Sistema de almacenamiento de archivos como: imagenes, videos, slides, texto, etc" {
+            tags "External"
+        }
+
+        gmail = softwareSystem "Gmail" "Sistema de gestion de correos" {
+            tags "External"
+        }
+
+       
+        prof -> ss.fe "gestiona grupos de estudio"
+        est  -> ss.fe "ver topicos y realiza practicas"
+        ss -> youtube "reproducir videos"
+        ss -> gmail "Envía correos"
+        ss -> firebase "Almacena archivos"
+        gmail -> est "Envía correo y notifica"
+        gmail -> prof "Envía correo y notifica"
+        ss.fe -> ss.be "API REST[JSON]"
+        ss.be -> ss.dl "<<Prisma>>"
+        ss.dl -> ss.db "Lee y escribe"
+        ss.be -> gmail "gestion de mensajeria"
+        ss.be -> firebase "gestion de archivos"
+        ss.be -> youtube "gestion de video"
+    }
+
+    views {
+        systemContext ss "Contexto" {
+            include *
+            autolayout tb
+            
+        }
+
+        container ss "Contenedores" {
+            include *
+            
+            autolayout lr
+            
+            
+        }
+
+        styles {
+            
+            
+            element "Person" {
+                shape person
+                background #08427b
+                color #ffffff
+            }
+            element "Internal" {
+                shape roundedbox
+                background #1168bd
+                color #ffffff
+            }
+            element "External" {
+                shape roundedbox
+                background #999999
+                color #ffffff
+            }
+            element "Database" {
+                shape cylinder
+                background #1168bd
+                color #ffffff
+            }
+            relationship "Relationship" {
+                thickness 2
+                routing Orthogonal
+                color #707070
+                dashed true
+                
+            }
+        }
+    }
+}

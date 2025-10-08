@@ -1,14 +1,14 @@
 const express = require('express');
 const app = express();
 const PORT = 3001;
-const AuthenticacionService = require('./services/authenticationService');
-const UserRepository = require('./repository/userRepository');
-const repository = new UserRepository();
+//const AuthenticacionService = require('./services/authenticationService');
+//const UserRepository = require('./repository/userRepository');
+//const repository = new UserRepository();
 app.use(express.json());
 
 
 
-app.post('/login',async (req,res) => {
+/*app.post('/login',async (req,res) => {
     try{
         const username = req.body.username;
         const pass = req.body.password;
@@ -24,7 +24,7 @@ app.post('/login',async (req,res) => {
     }catch(e){
             return res.status(500).json( {message:`Internal server error ${e}`});
     }
-});
+});*/
 /*
 function verifyToken(req, res, next){
     const header = req.header("Authorization") || "";
@@ -46,8 +46,33 @@ app.get("/protected", verifyToken, (req, res) => {
     return res.status(200).json({ message: "Acceso correcto" });
 });
 */
+
+
+
 app.get('/', (req, res) => {
     res.send('Hello World');
+});
+
+let users = [
+    {
+        id: 1,
+        firstName: "Juan ",
+        LastName: "Perez Garcia",
+        email: "perezjuan@gmail.com",
+        password:"PZR234"
+    }
+]
+
+app.get('/api/user/:id', (req, res) => {
+    const id = req.params.id;
+    const user = users.find(us => us.id == id);
+
+    if(!user){
+        return res.status(404).send(`usuario no encontrado`);
+    }
+
+    res.json(user);
+
 });
 
 

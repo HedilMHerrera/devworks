@@ -42,7 +42,7 @@ const Input = ({ label, Icon, value, setValue, type, error, setError, sx}) => {
                     bgcolor:'secondary.main',
                     borderStyle:'solid',
                     borderWidth:1,
-                    borderColor:(error) ? "background.contrastText":"red",
+                    borderColor:(error.lenght>0) ? "background.contrastText":"red",
                     fontSize:20,
                     '& :focus':{
                         borderWidth:1,

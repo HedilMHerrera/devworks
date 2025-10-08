@@ -16,7 +16,7 @@ export default function () {
         const fetchUser = async () => {
             try {
                 const id = 1;
-                const response = await fetch(`http://localhost:3001/api/user/${id}`);
+                const response = await fetch(`http://localhost:30001/api/user/${id}`);
                 if (!response.ok) {
                     throw new Error(`Server Error: ${response.status}`);
                 }
@@ -177,12 +177,15 @@ export default function () {
                         value={firstName}
                         setValue={setFirstName}
                         sx={{ flex: 1 }}
+                        error=""
                     />
                     <Input
                         label="Apellido"
                         value={lastName}
                         setValue={setLastName}
                         sx={{ flex: 1 }}
+                        error=""
+
                     />
                 </Box>
                 <Box sx={{
@@ -197,13 +200,18 @@ export default function () {
                         value={email}
                         setValue={setEmail}
                         sx={{ with: 1 }}
+                        error=""
+
                     />
                     <Input
                         label="contraseña"
                         value={password}
                         setValue={setPassword}
                         sx={{ with: 1 }}
+                        error=""
                     />
+                        
+
                 </Box>
                 <ButtonCustom
                     type="primary" sx={{ width: "11rem", padding: "2rem", marginTop: "1rem" }}>

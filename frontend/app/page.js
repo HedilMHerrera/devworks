@@ -27,7 +27,9 @@ export default function Home() {
             fontSize:{
               xs:35, sm:30, md:25,
             },
-            display:"flex"
+            display:"flex",
+            flexWrap:"wrap",
+            flexDirection:'column'
           }}
         >
         <Box

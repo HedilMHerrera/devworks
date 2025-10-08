@@ -44,8 +44,8 @@ const handleLoginPayload = async () => {
     if(isValidFields){
         const { message, success, ...more } = await login(user, password);
         if(success){
-            enqueueSnackbar("correcto",{variant:"success"});
             const { data:{ token, user } } = more;
+            enqueueSnackbar(`Bienvenido "${user.username}"`,{variant:"success"});
             setSession(token, user);
             router.push('/')
         } else {
@@ -56,6 +56,7 @@ const handleLoginPayload = async () => {
 }
   return (
   <Container
+    component="main"
     sx={{
         display:"flex",
         flexDirection:"column",

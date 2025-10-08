@@ -8,6 +8,7 @@ import Notify from "./notify";
 import Theme from "./theme";
 import { Container } from "@mui/material";
 import { SessionProvider } from "./context/SessionContext";
+import { MenuCustom } from "./components/Menu";
 export default function RootLayout({ children }) {
   return (
     <html lang="es">
@@ -24,6 +25,7 @@ export default function RootLayout({ children }) {
         >
           <SessionProvider>
             <Notify>
+              <MenuCustom />
             {children}
             </Notify>
           </SessionProvider>

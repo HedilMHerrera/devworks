@@ -7,11 +7,11 @@ import '@fontsource/roboto/700.css';
 import Notify from "./notify";
 import Theme from "./theme";
 import { Container } from "@mui/material";
+import { SessionProvider } from "./context/SessionContext";
 export default function RootLayout({ children }) {
   return (
     <html lang="es">
       <Theme>
-        
         <Container
           component="body"
           sx={{
@@ -22,9 +22,11 @@ export default function RootLayout({ children }) {
             alignItems:"center"
           }}
         >
-          <Notify>
-          {children}
-          </Notify>
+          <SessionProvider>
+            <Notify>
+            {children}
+            </Notify>
+          </SessionProvider>
         </Container>
         
       </Theme>

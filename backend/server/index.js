@@ -38,7 +38,7 @@ app.post('/login',async (req,res) => {
     return res.status(200).json({ message: "Acceso correcto" });
 });*/
 
-app.get('/', (req, res) => {
-    res.send('Hello World');
+app.get('/',(req,res) => {
+    res.send('Bienvenido a PyCraft');
 });
 module.exports= app;

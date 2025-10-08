@@ -1,6 +1,6 @@
 'use client'
 import axios from "axios";
-const API_URL = 'http://localhost:3001';
+const API_URL = 'http://localhost:30001';
 export const login = async (name, password)=>{
     const payload = {
         "username" : name,

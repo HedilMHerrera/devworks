@@ -11,7 +11,6 @@ import { useRouter } from 'next/navigation';
 import style from './menu.module.css';
 import { SessionContext } from '../context/SessionContext';
 import UserStudentMenu from './UserStudentMenu';
-import ButtonCustom from './Button';
 export const MenuCustom = () => {
   const { dataUser } = useContext(SessionContext);
   const router = useRouter();
@@ -19,12 +18,6 @@ export const MenuCustom = () => {
   useEffect(() => {
     setUserData(dataUser)
   },[dataUser])
-/*  const [isClient, setIsClient] = useState(false);
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  if (!isClient) return null;*/
   return (
     <Box>
       <AppBar position="fixed" color="background">
@@ -60,10 +53,10 @@ export const MenuCustom = () => {
         >
             <Button 
               className={`${style['shrink-border']}`} 
-              color="primary"
+              color="secondary.contrastText"
               onClick={() => { router.push('/') }}
             >Inicio</Button>
-            <Button className={`${style['shrink-border']}`} color="primary">Información</Button>
+            <Button className={`${style['shrink-border']}`} color="secondary.contrastText">Información</Button>
             {(!userData) && 
         (<Button 
               className={`${style['shrink-border']}`} 

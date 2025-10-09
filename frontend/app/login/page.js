@@ -47,7 +47,7 @@ const handleLoginPayload = async () => {
             const { data:{ token, user } } = more;
             enqueueSnackbar(`Bienvenido "${user.username}"`,{variant:"success"});
             setSession(token, user);
-            router.push('/')
+            router.push('/user')
         } else {
             enqueueSnackbar(message, {variant:"error"});
         }

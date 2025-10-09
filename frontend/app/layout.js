@@ -42,7 +42,6 @@ export default function RootLayout({ children }) {
                     alignItems="start"
                     justifyContent="start"
                   >
-                    <AsideMenu />
                     <Box
                       display="flex"
                       flexDirection="column"

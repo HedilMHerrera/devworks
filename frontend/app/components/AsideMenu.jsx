@@ -8,23 +8,28 @@ import { menuItems } from './menuItems';
 import { ArrowBack, ArrowForward } from '@mui/icons-material';
 import styles from './menu.module.css'
 import { SessionContext } from '../context/SessionContext';
+import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 const roles = {
       1:"admin",
       2:"teacher",
       3:"student",
       null:null,
-    }
-const Item = ({ title, to, Icon, selected, setSelected }) => {
+}
+const Item = ({ title, to, Icon }) => {
+    const pathname = usePathname();
+    const router = useRouter();
     return (
       <MenuItem 
-        active= { title === selected }
-        onClick={ () => setSelected(title) }
+        active= { title.replace(/\s+/g, "") === pathname.split('/')[2] }
+        onClick={ () => { router.push(to) } }
         icon = { <Icon sx={{bgColor:"white"}}/> }
       >
         <Button  className={styles['shrink-border']}>
           <Typography 
           variant='p' 
           color='background.contrastText'
+          
         >{ title }</Typography>
         </Button>
         
@@ -33,7 +38,6 @@ const Item = ({ title, to, Icon, selected, setSelected }) => {
 
 const AsideMenuBar= ({ data, name }) => {
   const [ isCollapsed, setIsCollapsed ] = useState(true)
-  const [selected, setSelected] = useState("Dashboard")
   return (
     <Box 
       sx={{
@@ -54,14 +58,16 @@ const AsideMenuBar= ({ data, name }) => {
           color: "primary.main",
         },
         "& .pro-menu-item.active": {
-          color: "background.contrastText",
+          color: "secondary.contrastText",
+          borderLeftStyle:"solid",
+          bgcolor: "secondary.main",
+          borderColor:"primary.main",
         },
         "& .pro-item-content": {
           overflow:(isCollapsed) ? "hidden !important":"visible !important",
         },
         zIndex:100,
         height:"100%",
-        position:{xs:"fixed", sm:"relative"}
       }}
 
     >
@@ -71,8 +77,8 @@ const AsideMenuBar= ({ data, name }) => {
           onClick={ () => setIsCollapsed(!isCollapsed) }
           icon={ isCollapsed ? 
             <ArrowForward sx={{
-                              color:"primary.contrastText", 
-                              bgcolor:"primary.main",
+                              color:"background.contrastText", 
+                              bgcolor:"secondary.main",
                               borderRadius:"5px",
                             }} />: 
             <ArrowBack /> }
@@ -80,9 +86,9 @@ const AsideMenuBar= ({ data, name }) => {
             margin: "10px 0 20px 0",
           }}
         ><Typography
-          variant='h4'
+          className={ styles.shiny }
+          variant='h6'
           sx={{
-            color:"red",
             textAlign:"center"
           }}
         >{ name.toUpperCase() }</Typography>
@@ -92,11 +98,9 @@ const AsideMenuBar= ({ data, name }) => {
           >
             {data && data.map((dat) => (<Item 
               title={ dat.name }
-              to="/"
+              to={dat.route}
               key={ dat.name }
               Icon= { dat.Icon }
-              selected={ selected }
-              setSelected={ setSelected }
             />))}
           </Box>
       </Menu>

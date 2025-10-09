@@ -1,8 +1,12 @@
 {
+  "presets": [
+    "@babel/preset-env"
+  ],
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "test": "jest",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -21,11 +25,17 @@
     "notistack": "^3.0.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "styled-components": "^6.1.19"
+    "react-pro-sidebar": "^0.7.1",
+    "styled-components": "^6.1.19",
+    "supertest": "^7.1.4"
   },
   "devDependencies": {
+    "@babel/core": "^7.28.4",
+    "@babel/preset-env": "^7.28.3",
+    "@babel/register": "^7.28.3",
     "@eslint/eslintrc": "^3",
     "eslint": "^9",
-    "eslint-config-next": "15.5.4"
+    "eslint-config-next": "15.5.4",
+    "jest": "^30.2.0"
   }
 }

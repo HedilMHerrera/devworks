@@ -1,3 +1,4 @@
+'use client';
 import React,{useState, useContext} from 'react'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { SessionContext } from '../context/SessionContext';
@@ -92,8 +93,6 @@ const UserStudentMenu = () => {
                 
                 <MenuItem  onClick={handleClose}><Person4Icon/>Perfil</MenuItem>
                 <hr />
-                <MenuItem onClick={handleClose}><SettingsApplicationsIcon/>Configuración</MenuItem>
-                 <hr />
                 <MenuItem 
                   sx={{
                     color:'red',
@@ -127,8 +126,7 @@ const UserStudentMenu = () => {
             >
                 <MenuItem  onClick={handleClose}><Person4Icon/>Perfil</MenuItem>
                 <hr />
-                <MenuItem onClick={handleClose}><SettingsApplicationsIcon/>Configuración</MenuItem>
-                 <hr />
+                
                 <MenuItem 
                   sx={{
                     color:'red',

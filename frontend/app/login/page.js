@@ -56,7 +56,6 @@ const handleLoginPayload = async () => {
 }
   return (
   <Container
-    component="main"
     sx={{
         display:"flex",
         flexDirection:"column",

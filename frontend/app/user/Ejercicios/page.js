@@ -1,4 +1,4 @@
-import Loading from '@/app/loading'
+import Loading from '@/app/loadingCustom'
 import { Typography } from '@mui/material'
 import React from 'react'
 

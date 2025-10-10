@@ -2,7 +2,7 @@
 import { Box } from '@mui/material'
 import React, { useEffect, useState, Suspense } from 'react'
 import { useSessionZ } from '../context/SessionContext'
-import Loading from '../loading';
+import Loading from '../loadingCustom';
 const Charging = ({children}) => {
   const hasHydrated = useSessionZ.persist?.hasHydrated();
   const [hydrated, setHydrated] = useState(null);

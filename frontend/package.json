@@ -27,7 +27,8 @@
     "react-dom": "19.1.0",
     "react-pro-sidebar": "^0.7.1",
     "styled-components": "^6.1.19",
-    "supertest": "^7.1.4"
+    "supertest": "^7.1.4",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@babel/core": "^7.28.4",

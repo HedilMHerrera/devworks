@@ -7,15 +7,9 @@ import "react-pro-sidebar/dist/css/styles.css";
 import { menuItems } from './menuItems';
 import { ArrowBack, ArrowForward } from '@mui/icons-material';
 import styles from './menu.module.css'
-import { SessionContext } from '../context/SessionContext';
+import { useSessionZ } from '../context/SessionContext';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-const roles = {
-      1:"admin",
-      2:"teacher",
-      3:"student",
-      null:null,
-}
 const Item = ({ title, to, Icon }) => {
     const pathname = usePathname();
     const router = useRouter();
@@ -36,7 +30,7 @@ const Item = ({ title, to, Icon }) => {
     </MenuItem>)
 }
 
-const AsideMenuBar= ({ data, name }) => {
+const AsideMenuBar= ({ data }) => {
   const [ isCollapsed, setIsCollapsed ] = useState(true)
   return (
     <Box 
@@ -91,12 +85,12 @@ const AsideMenuBar= ({ data, name }) => {
           sx={{
             textAlign:"center"
           }}
-        >{ name.toUpperCase() }</Typography>
+        >{ data.toUpperCase() }</Typography>
         </MenuItem>
           <Box paddingLeft={ isCollapsed ? undefined : "10%" }
 
           >
-            {data && data.map((dat) => (<Item 
+            {menuItems[data].map((dat) => (<Item 
               title={ dat.name }
               to={dat.route}
               key={ dat.name }
@@ -105,24 +99,12 @@ const AsideMenuBar= ({ data, name }) => {
           </Box>
       </Menu>
       </ProSidebar>
-      
     </Box>
   )
 }
 
-const ConditionalRender = ({dataUser}) => {
-    const [data, setData] = useState(null);
-  const [name, setName] = useState(roles[dataUser.roleId]);
-  useEffect(() => {
-    setData(menuItems[name])
-  },[])
-  return(<>
-    {(data) && <AsideMenuBar name={name} data={data} />}
-  </>)
-}
-
 export const AsideMenu = () => {
-  const { dataUser } = useContext(SessionContext);
-  return dataUser && <ConditionalRender dataUser = { dataUser }/>
+  const user = useSessionZ((state) => state.user)
+  return user && <AsideMenuBar data = { user.role }/>
 }
 

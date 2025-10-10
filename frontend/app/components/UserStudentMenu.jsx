@@ -7,10 +7,11 @@ import { useRouter } from 'next/navigation';
 import Person4Icon from '@mui/icons-material/Person4';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import HttpsIcon from '@mui/icons-material/Https';
+import { useSessionZ } from '../context/SessionContext';
 const UserStudentMenu = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const { logoutSession } = useContext(SessionContext);
   const router = useRouter();
+  const logoutSession = useSessionZ((state) => state.logout)
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };

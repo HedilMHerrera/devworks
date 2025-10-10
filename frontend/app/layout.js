@@ -7,9 +7,9 @@ import '@fontsource/roboto/700.css';
 import Notify from "./notify";
 import Theme from "./theme";
 import { Box } from "@mui/material";
-import { SessionProvider } from "./context/SessionContext";
 import { MenuCustom } from "./components/Menu";
-import { AsideMenu } from "./components/AsideMenu";
+import Charging from "./components/Charging";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="es">
@@ -25,15 +25,13 @@ export default function RootLayout({ children }) {
             margin:0
           }}
         >
-          <SessionProvider>
+          <Charging>
             <Notify>
-              
               <Box
                 width="100%"
               >
-                 <Box>
-                    <MenuCustom />
-                  </Box>
+                
+                  <MenuCustom />
                   <Box
                     component="main"
                     display="flex"
@@ -47,15 +45,16 @@ export default function RootLayout({ children }) {
                       flexDirection="column"
                       alignItems="center"
                       width="100%"
-                      mt={2}
                       zIndex={1}
                     >
-                       {children}
+                      
+                        {children}
+                      
                     </Box>
                   </Box>
               </Box>
             </Notify>
-          </SessionProvider>
+            </Charging>
         </Box>
       </Theme>
     </html>

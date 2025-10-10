@@ -1,5 +1,5 @@
 'use client';
-import React,{ useContext, useState, useEffect } from 'react';
+import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -9,15 +9,12 @@ import MenuItem from '@mui/material/MenuItem';
 import SnakeIcon from '../snakeicon/SnakeIcon';
 import { useRouter } from 'next/navigation';
 import style from './menu.module.css';
-import { SessionContext } from '../context/SessionContext';
 import UserStudentMenu from './UserStudentMenu';
+import { useSessionZ } from '../context/SessionContext';
 export const MenuCustom = () => {
-  const { dataUser } = useContext(SessionContext);
   const router = useRouter();
-  const [userData, setUserData] = useState(null);
-  useEffect(() => {
-    setUserData(dataUser)
-  },[dataUser])
+  const user = useSessionZ((state) => state.user );
+  
   return (
     <Box>
       <AppBar position="fixed" color="background">
@@ -57,7 +54,7 @@ export const MenuCustom = () => {
               onClick={() => { router.push('/') }}
             >Inicio</Button>
             <Button className={`${style['shrink-border']}`} color="secondary.contrastText">Información</Button>
-            {(!userData) && 
+            {(!user) && 
         (<Button 
               className={`${style['shrink-border']}`} 
               onClick={() => {router.push('/login')}}
@@ -71,7 +68,8 @@ export const MenuCustom = () => {
               }}
               >Login</Button>
             )}
-              {(userData) && (<UserStudentMenu />)}
+          {(user) && (<UserStudentMenu />)}
+
         </Box>
         
         </Toolbar>

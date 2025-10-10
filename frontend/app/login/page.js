@@ -1,6 +1,6 @@
 'use client';
 import { Box, Container, Paper, Typography, Link } from '@mui/material'
-import React, { useContext, useLayoutEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation';
 import SnakeIcon from '../snakeicon/SnakeIcon'
 import Input from '../components/Input'
@@ -11,7 +11,7 @@ import GoogleIcon from '@mui/icons-material/Google';
 import { ArrowForward } from '@mui/icons-material';
 import { login } from './login';
 import { useSnackbar } from 'notistack';
-import { SessionContext } from '../context/SessionContext';
+import { useSessionZ } from '../context/SessionContext';
 
 const Page = () => {
     const [emailText, setEmailText] = useState("");
@@ -20,7 +20,7 @@ const Page = () => {
     const [passError, setPassError] = useState("");
     const { enqueueSnackbar } = useSnackbar();
     const [isLoading, setIsLoading] = useState(false);
-    const { setSession } = useContext(SessionContext);
+    const setSession = useSessionZ((state) => state.setSession );
     const router = useRouter();
     
     const handleResetMessageError = () => {
@@ -90,6 +90,7 @@ const handleLoginPayload = async () => {
             gap:3,
             display:"flex",
             flexDirection:"column",
+            position:"relative",
         }}
       >
         <Typography
@@ -114,14 +115,21 @@ const handleLoginPayload = async () => {
             Icon={KeyIcon} 
             value={passText} 
             setValue={setPassText}  
-            type="pass"/>
-        <ButtonCustom 
-            onClick={ handleLoginPayload }
-            type="primary"
-            disabled = { isLoading }
-            >
-            Iniciar Sesión
-        </ButtonCustom>
+            type="pass"
+        />
+
+            <ButtonCustom 
+                onClick={ handleLoginPayload }
+                type="primary"
+                sx={{
+                    width:"100%"
+                }}
+                disabled = { isLoading }
+                >
+                Iniciar Sesión
+            </ButtonCustom>
+
+        
         <Box
             sx={{
                 display:"flex",

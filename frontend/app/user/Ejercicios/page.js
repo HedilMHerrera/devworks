@@ -1,3 +1,4 @@
+import Loading from '@/app/loading'
 import { Typography } from '@mui/material'
 import React from 'react'
 
@@ -9,8 +10,6 @@ const page = () => {
       Aca la pagina de ejercicios
     </Typography>
   )
-
-  variant='h3'
 }
 
 export default page;

@@ -37,6 +37,7 @@ const ItemMenu = ({ name, Icon, route, description }) => {
                 color='background.contrastText'
                 maxWidth={250}
                 maxHeight={250}
+                textAlign="center"
             >
                 {description}
             </Typography>

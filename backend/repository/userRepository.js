@@ -16,6 +16,9 @@ class UserRespository{
                         email: username,
                     }   
                 ] 
+            },
+            include:{
+                role: true,
             }
         });
         if(!user){
@@ -25,9 +28,10 @@ class UserRespository{
         if(!bcrypt.compare(pass, user.password)){
             return false;
         }
+        const roleName = user.role.name
+        const { password: _, role: __, roleId: ___, ...safeUser} = user;
 
-        const { password: _, ...safeUser} = user;
-        return safeUser;
+        return {role: roleName, ...safeUser};
     }
 }
 

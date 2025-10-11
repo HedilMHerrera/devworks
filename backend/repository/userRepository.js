@@ -33,6 +33,28 @@ class UserRespository{
 
         return {role: roleName, ...safeUser};
     }
+    async loginGoogle(email){
+        const user = await this._prisma.user.findFirst({
+            where: {
+                OR:[
+                    {
+                        email
+                    } 
+                ] 
+            },
+            include:{
+                role: true,
+            }
+        });
+        if(!user){
+            return false;
+        }
+        
+        const roleName = user.role.name
+        const { password: _, role: __, roleId: ___, ...safeUser} = user;
+
+        return {role: roleName, ...safeUser};
+    }
 }
 
 module.exports = UserRespository;

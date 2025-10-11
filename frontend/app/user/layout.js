@@ -1,6 +1,8 @@
 import React from 'react'
 import { Box } from '@mui/material'
 import { AsideMenu } from "../components/AsideMenu";
+
+
 const layout = ({children}) => {
   return (
     <Box width="100%" display="flex">

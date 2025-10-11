@@ -9,7 +9,9 @@ import Theme from "./theme";
 import { Box } from "@mui/material";
 import { MenuCustom } from "./components/Menu";
 import Charging from "./components/Charging";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
+const userId = '221401385773-3r3ha0nb21ukkef1bi1dgn40ci6srgtc.apps.googleusercontent.com';
 export default function RootLayout({ children }) {
   return (
     <html lang="es">
@@ -25,6 +27,7 @@ export default function RootLayout({ children }) {
             margin:0
           }}
         >
+          <GoogleOAuthProvider clientId={ userId }>
           <Charging>
             <Notify>
               <Box
@@ -55,6 +58,7 @@ export default function RootLayout({ children }) {
               </Box>
             </Notify>
             </Charging>
+          </GoogleOAuthProvider>
         </Box>
       </Theme>
     </html>

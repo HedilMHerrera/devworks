@@ -33,6 +33,23 @@ app.post('/login',async (req,res) => {
     }
 });
 
+app.post('/logingoogle',async (req,res) => {
+    try{
+        const tokenUser = req.body.token;
+        if(!tokenUser){
+            return res.status(400).json({message:'Inicio Invalido'});
+        }
+        const acc = new AuthenticacionService(repository);
+        const { token ,user } = await acc.loginGoogleS(tokenUser);
+        if(!token){
+            return res.status(401).json({ message: "Nombre de usuario o contrasenia incorrectas" });
+        }
+        return res.status(200).json({ token, user });
+    }catch(e){
+            return res.status(500).json( {message:`Internal server error ${e}`});
+    }
+});
+
 
 /*app.get("/protected", AuthenticacionService.verifyToken, (req, res) => {
     return res.status(200).json({ message: "Acceso correcto" });

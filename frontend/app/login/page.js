@@ -171,7 +171,7 @@ const handleLoginPayload = async () => {
             <Box>Iniciar con Google</Box>
         </ButtonCustom>*/}
         <Typography sx={{display:"flex", gap:1}}>
-            ¿Aún no tienes Cuenta?   <Link sx={{display:"flex", alignItems:"center"}} href=""  >Registrate Ahora <ArrowForward /></Link>
+            ¿Aún no tienes Cuenta?   <Link sx={{display:"flex", alignItems:"center"}} href="/register"  >Registrate Ahora <ArrowForward /></Link>
         </Typography>
         <Typography>
             <Link href="" >¿Olvidaste Tu Cuenta?</Link>

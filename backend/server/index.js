@@ -49,7 +49,7 @@ let users = [
     {
         id: 1,
         firstName: "Juan ",
-        LastName: "Perez Garcia",
+        lastName: "Perez Garcia",
         email: "perezjuan@gmail.com",
         password:"PZR234"
     }

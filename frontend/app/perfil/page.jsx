@@ -178,6 +178,9 @@ export default function () {
                         setValue={setFirstName}
                         sx={{ flex: 1 }}
                         error=""
+                        setError={
+                            () => {}
+                        }
                     />
                     <Input
                         label="Apellido"
@@ -185,6 +188,9 @@ export default function () {
                         setValue={setLastName}
                         sx={{ flex: 1 }}
                         error=""
+                        setError={
+                            () => {}
+                        }
 
                     />
                 </Box>
@@ -201,6 +207,9 @@ export default function () {
                         setValue={setEmail}
                         sx={{ with: 1 }}
                         error=""
+                        setError={
+                            () => {}
+                        }
 
                     />
                     <Input
@@ -209,6 +218,10 @@ export default function () {
                         setValue={setPassword}
                         sx={{ with: 1 }}
                         error=""
+                        setError={
+                            () => {}
+                        }
+                        type="pass"
                     />
                         
 

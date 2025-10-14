@@ -1,5 +1,5 @@
 'use client';
-import React,{ useContext, useState, useEffect } from 'react';
+import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -9,17 +9,12 @@ import MenuItem from '@mui/material/MenuItem';
 import SnakeIcon from '../snakeicon/SnakeIcon';
 import { useRouter } from 'next/navigation';
 import style from './menu.module.css';
-import { SessionContext } from '../context/SessionContext';
 import UserStudentMenu from './UserStudentMenu';
+import { useSessionZ } from '../context/SessionContext';
 export const MenuCustom = () => {
-  const { dataUser } = useContext(SessionContext);
   const router = useRouter();
-  const [isClient, setIsClient] = useState(false);
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  if (!isClient) return null;
+  const user = useSessionZ((state) => state.user );
+  
   return (
     <Box>
       <AppBar position="fixed" color="background">
@@ -55,11 +50,11 @@ export const MenuCustom = () => {
         >
             <Button 
               className={`${style['shrink-border']}`} 
-              color="primary"
+              color="secondary.contrastText"
               onClick={() => { router.push('/') }}
             >Inicio</Button>
-            <Button className={`${style['shrink-border']}`} color="primary">Grupos</Button>
-            {(!dataUser) ? 
+            <Button className={`${style['shrink-border']}`} color="secondary.contrastText">Información</Button>
+            {(!user) && 
         (<Button 
               className={`${style['shrink-border']}`} 
               onClick={() => {router.push('/login')}}
@@ -71,7 +66,10 @@ export const MenuCustom = () => {
                   bgcolor:"transparent",
                 }
               }}
-              >Login</Button>):<UserStudentMenu />}
+              >Login</Button>
+            )}
+          {(user) && (<UserStudentMenu />)}
+
         </Box>
         
         </Toolbar>

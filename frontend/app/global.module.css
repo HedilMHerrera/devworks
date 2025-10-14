@@ -1,0 +1,36 @@
+.centerPageColumn{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    justify-self: center;
+    align-self: center;
+}
+
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #202837 0%,
+    #2a394a 25%,
+    #ffffff 50%,
+    #2a394a 75%,
+    #202837 100%
+  );
+  background-size: 200% 100%;
+  animation: shineSkeleton 1.5s alternate infinite;
+  pointer-events: none;
+}
+
+@keyframes shineSkeleton {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}

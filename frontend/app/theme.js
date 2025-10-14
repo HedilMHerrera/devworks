@@ -31,7 +31,9 @@ const palette = {
                     borderRadius:"7px",
                     borderColor:'#202837',
                     borderStyle:"solid",
-                    borderWidth: "1px"
+                    borderWidth: "1px",
+                    boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+                    border: '1px solid rgba(255,255,255,0.05)',
                 }
             }
         },

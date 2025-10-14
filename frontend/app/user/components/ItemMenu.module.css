@@ -1,0 +1,20 @@
+.paperItem{
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    width: 220px;
+    height: 220px;
+}
+
+.paperContainer{
+    position:relative;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding: 40px;
+    transition: wrap 1.5 ease-in-out;
+}

@@ -1,6 +1,6 @@
 'use client';
 import { Box, Container, Paper, Typography, Link } from '@mui/material'
-import React, { useContext, useLayoutEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation';
 import SnakeIcon from '../snakeicon/SnakeIcon'
 import Input from '../components/Input'
@@ -9,9 +9,10 @@ import KeyIcon from '@mui/icons-material/Key';
 import ButtonCustom from '../components/Button';
 import GoogleIcon from '@mui/icons-material/Google';
 import { ArrowForward } from '@mui/icons-material';
-import { login } from './login';
+import { login, loginGoogle } from './login';
 import { useSnackbar } from 'notistack';
-import { SessionContext } from '../context/SessionContext';
+import { useSessionZ } from '../context/SessionContext';
+import { GoogleLogin } from '@react-oauth/google';
 
 const Page = () => {
     const [emailText, setEmailText] = useState("");
@@ -20,13 +21,26 @@ const Page = () => {
     const [passError, setPassError] = useState("");
     const { enqueueSnackbar } = useSnackbar();
     const [isLoading, setIsLoading] = useState(false);
-    const { setSession } = useContext(SessionContext);
+    const setSession = useSessionZ((state) => state.setSession );
     const router = useRouter();
     
     const handleResetMessageError = () => {
         setEmailError("");
         setPassError("");
     }
+
+    const googleLogin = async (token) => {
+        const { message, success, ...more } = await loginGoogle(token);
+        if(success){
+            const { data:{ token, user } } = more;
+            enqueueSnackbar(`Bienvenido "${user.username}"`,{variant:"success"});
+            setSession(token, user);
+            router.push('/user')
+        } else {
+            enqueueSnackbar(message, {variant:"error"});
+        }
+    }
+
 const handleLoginPayload = async () => {
     setIsLoading(true);
     const user = emailText.trim();
@@ -47,7 +61,7 @@ const handleLoginPayload = async () => {
             const { data:{ token, user } } = more;
             enqueueSnackbar(`Bienvenido "${user.username}"`,{variant:"success"});
             setSession(token, user);
-            router.push('/')
+            router.push('/user')
         } else {
             enqueueSnackbar(message, {variant:"error"});
         }
@@ -56,7 +70,6 @@ const handleLoginPayload = async () => {
 }
   return (
   <Container
-    component="main"
     sx={{
         display:"flex",
         flexDirection:"column",
@@ -91,6 +104,7 @@ const handleLoginPayload = async () => {
             gap:3,
             display:"flex",
             flexDirection:"column",
+            position:"relative",
         }}
       >
         <Typography
@@ -115,14 +129,21 @@ const handleLoginPayload = async () => {
             Icon={KeyIcon} 
             value={passText} 
             setValue={setPassText}  
-            type="pass"/>
-        <ButtonCustom 
-            onClick={ handleLoginPayload }
-            type="primary"
-            disabled = { isLoading }
-            >
-            Iniciar Sesión
-        </ButtonCustom>
+            type="pass"
+        />
+
+            <ButtonCustom 
+                onClick={ handleLoginPayload }
+                type="primary"
+                sx={{
+                    width:"100%"
+                }}
+                disabled = { isLoading }
+                >
+                Iniciar Sesión
+            </ButtonCustom>
+
+        
         <Box
             sx={{
                 display:"flex",
@@ -140,13 +161,17 @@ const handleLoginPayload = async () => {
             </Typography>
             <Box component="hr" sx={{flexGrow:1, borderColor:"secondary.main"}}/>
         </Box>
-        <ButtonCustom
+        <GoogleLogin onSuccess={ credentialResponse => {
+            const token = credentialResponse.credential;
+            googleLogin(token);
+        } } />
+        {/*<ButtonCustom
         >
             <GoogleIcon />
             <Box>Iniciar con Google</Box>
-        </ButtonCustom>
+        </ButtonCustom>*/}
         <Typography sx={{display:"flex", gap:1}}>
-            ¿Aún no tienes Cuenta?   <Link sx={{display:"flex", alignItems:"center"}} href=""  >Registrate Ahora <ArrowForward /></Link>
+            ¿Aún no tienes Cuenta?   <Link sx={{display:"flex", alignItems:"center"}} href="/register"  >Registrate Ahora <ArrowForward /></Link>
         </Typography>
         <Typography>
             <Link href="" >¿Olvidaste Tu Cuenta?</Link>

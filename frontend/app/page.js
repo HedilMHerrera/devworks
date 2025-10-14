@@ -6,9 +6,7 @@ import SnakeIcon from "./snakeicon/SnakeIcon";
 export default function Home() {
   return (
     <div>
-      <Container
-        component="main"
-      >
+      <Container>
         <Typography
           variant="h1"
           display="flex"

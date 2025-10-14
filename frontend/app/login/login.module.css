@@ -1,0 +1,25 @@
+.loginLoader{
+    display: flex;
+    position: relative;
+}
+
+.loginLoader::before{
+    content: '""';
+    position:"absolute";
+    width:"300px";
+    height:"10px";
+    color: black;
+    background-color: red;
+    left:-50;
+
+    animation: loader 2s linear infinite;
+}
+
+@keyframes loader {
+    from{
+        transform: rotate(0deg)
+    }
+    to{
+        transform: rotate(360deg);
+    }
+}

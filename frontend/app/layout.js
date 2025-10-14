@@ -6,31 +6,60 @@ import '@fontsource/roboto/700.css';
 
 import Notify from "./notify";
 import Theme from "./theme";
-import { Container } from "@mui/material";
-import { SessionProvider } from "./context/SessionContext";
+import { Box } from "@mui/material";
 import { MenuCustom } from "./components/Menu";
+import Charging from "./components/Charging";
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
+const userId = '221401385773-3r3ha0nb21ukkef1bi1dgn40ci6srgtc.apps.googleusercontent.com';
 export default function RootLayout({ children }) {
   return (
     <html lang="es">
       <Theme>
-        <Container
+        <Box
           component="body"
           sx={{
             backgroundColor:"background.main",
             display:"flex",
             flexDirection:"column",
-            justifyContent:"center",
-            alignItems:"center"
+            alignItems:"center",
+            padding:0,
+            margin:0
           }}
         >
-          <SessionProvider>
+          <GoogleOAuthProvider clientId={ userId }>
+          <Charging>
             <Notify>
-              <MenuCustom />
-            {children}
+              <Box
+                width="100%"
+              >
+                
+                  <MenuCustom />
+                  <Box
+                    component="main"
+                    display="flex"
+                    width="100%"
+                    padding="0"
+                    alignItems="start"
+                    justifyContent="start"
+                  >
+                    <Box
+                      display="flex"
+                      flexDirection="column"
+                      alignItems="center"
+                      width="100%"
+                      zIndex={1}
+                    >
+                      
+                        {children}
+                      
+                    </Box>
+                  </Box>
+              </Box>
             </Notify>
-          </SessionProvider>
-        </Container>
-        
+            </Charging>
+          </GoogleOAuthProvider>
+        </Box>
       </Theme>
     </html>
   );

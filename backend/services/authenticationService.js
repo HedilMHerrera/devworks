@@ -1,6 +1,6 @@
 const secretKey = 'secret';
 const jwt = require('jsonwebtoken');
-
+const tokenDecode = require('jwt-decode');
 class AuthenticacionService{
     constructor(repository){
         this._repository = repository;
@@ -9,10 +9,22 @@ class AuthenticacionService{
     async login(username, pass){
         const user = await this._repository.login(username, pass);
         let token = null;
-        if(!user){
-            return {token, user};
+        if(user){
+            token = jwt.sign({ username }, secretKey, {expiresIn:"1h"});
         }
-        token = jwt.sign({ username }, secretKey, {expiresIn:"1h"});
+        return {token, user};
+    }
+
+    async loginGoogleS(tokenUser){
+        const { email, email_verified } = tokenDecode.jwtDecode(tokenUser);
+        let token = null;
+        if(!email_verified){
+            return { token, user:null };
+        }
+        const user = await this._repository.loginGoogle(email);
+        if(user){
+            token = jwt.sign({ email }, secretKey, {expiresIn:"1h"});
+        }
         return {token, user};
     }
 

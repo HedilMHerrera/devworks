@@ -1,6 +1,10 @@
 html,
 body {
   max-width: 100vw;
+  margin: 0;
+  padding: 0;
+  top: 0;
+  left: 0;
 }
 
 body {
@@ -11,7 +15,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 main{
-  margin-top: 80px;
+  margin-top: 66px;
 }
 
 hr{

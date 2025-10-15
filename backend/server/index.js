@@ -1,25 +1,29 @@
 const express = require('express');
 const cors = require('cors');
-const cookieParser = require('cookie-parser');
 const app = express();
 
 const VIEW_DIRECTION = 'http://localhost:3000'
 
+const cookieParser = require('cookie-parser');
+
 app.use(cors({
     origin: VIEW_DIRECTION,
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
+
 
 const AuthenticacionService = require('../services/authenticationService');
 const UserRepository = require('../repository/userRepository');
 const bcrypt = require('bcrypt');
-const repository = new UserRepository();
-
 const routerUser = require('./Routers/user');
-app.use(routerUser);
-
-app.use(express.json());
+const repository = new UserRepository();
 app.use(cookieParser());
+app.use(express.json());
+app.use("", routerUser);
+
+
+
 
 app.post('/login', async (req, res) => {
     try {
@@ -37,7 +41,7 @@ app.post('/login', async (req, res) => {
         res.cookie('authToken', token, {
             httpOnly: true,
             secure: false,
-            sameSite: 'Lax',
+            sameSite: 'lax',
             maxAge: 60 * 60 * 1000
         });
 
@@ -119,6 +123,12 @@ app.post('/register', async (req, res) => {
             return res.status(500).json({ message: 'No se pudo iniciar sesión después del registro' });
         }
 
+        res.cookie('authToken', token, {
+            httpOnly: true,
+            maxAge: 3600000, 
+            sameSite: 'lax',
+            secure: false 
+        });
         return res.status(201).json({ token, user, message: 'Usuario creado e iniciado sesión exitosamente' });
     } catch (e) {
         console.error('❌ ERROR EN /register:', e);
@@ -130,5 +140,5 @@ app.get('/', (req, res) => {
     res.send('Bienvenido a PyCraft');
 });
 
-module.exports  = app;
+module.exports = app;
 

@@ -12,7 +12,7 @@ export const loginGoogle = async (token) => {
 
 const loginStructure =  async (payload, url) => {
     try{
-        const response  = await axios.post(API_URL+url, payload);
+        const response  = await axios.post(API_URL+url, payload,{ withCredentials: true });
         return {success: true, data: response.data, message:"Ingreso Exitoso"};
     }catch(e){
         if(e.response){

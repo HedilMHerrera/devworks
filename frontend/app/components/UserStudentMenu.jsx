@@ -8,6 +8,7 @@ import Person4Icon from '@mui/icons-material/Person4';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import HttpsIcon from '@mui/icons-material/Https';
 import { useSessionZ } from '../context/SessionContext';
+import axios from 'axios';
 const UserStudentMenu = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const router = useRouter();
@@ -19,9 +20,16 @@ const UserStudentMenu = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const handleLogOut = () => {
+  const handleLogOut = async() => {
     handleClose();
-    logoutSession();
+    try {
+      await axios.post('http://localhost:30001/logout',{}, { withCredentials: true });
+      logoutSession();
+    } catch (error) {
+      console.error("Error cerrando sesión:", error);
+      logoutSession();
+    }
+    
     router.push('/login');
   }
   return (
@@ -61,7 +69,7 @@ const UserStudentMenu = () => {
                   }
                 }}
             >
-                <MenuItem  onClick={handleClose}><Person4Icon/>Perfil</MenuItem>
+                <MenuItem  onClick={() => {handleClose(); router.push("/profile")}}><Person4Icon/>Perfil</MenuItem>
                 <hr />
                 <MenuItem  onClick={ () => { handleClose(); router.push("/user") } }><BusinessCenterIcon/>Cuenta</MenuItem>
                 <hr />

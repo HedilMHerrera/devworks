@@ -2,6 +2,8 @@
 import axios from "axios";
 const API_URL = 'http://localhost:30001';
 
+axios.defaults.withCredentials = true;
+
 export const checkEmail = async (email) => {
     try {
         const response = await axios.get(`${API_URL}/check-email`, { params: { email } });
@@ -45,7 +47,7 @@ export const register = async (username, email, password) => {
         password,
     };
     try {
-        const response = await axios.post(API_URL + '/register', payload);
+        const response = await axios.post(API_URL + '/register', payload, { withCredentials: true });
         return { success: true, data: response.data, message: "Registro Exitoso" };
     } catch (e) {
         if (e.response) {

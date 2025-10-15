@@ -58,6 +58,12 @@ class UserRespository{
         return {role: roleName, ...safeUser};
     }
 
+    async findUserById(id) {
+        return await this._prisma.user.findUnique({
+            where: { id: id }
+        });
+    }
+
     async findByUsernameOrEmail(username, email) {
         return await this._prisma.user.findFirst({
             where: {

@@ -1,18 +1,29 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+
 const VIEW_DIRECTION = 'http://localhost:3000'
+
+const cookieParser = require('cookie-parser');
 
 app.use(cors({
     origin: VIEW_DIRECTION,
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
+
 
 const AuthenticacionService = require('../services/authenticationService');
 const UserRepository = require('../repository/userRepository');
 const bcrypt = require('bcrypt');
+const routerUser = require('./Routers/user');
 const repository = new UserRepository();
+app.use(cookieParser());
 app.use(express.json());
+app.use("", routerUser);
+
+
+
 
 app.post('/login', async (req, res) => {
     try {
@@ -26,10 +37,24 @@ app.post('/login', async (req, res) => {
         if (!token) {
             return res.status(401).json({ message: "Nombre de usuario o contrasenia incorrectas" });
         }
+
+        res.cookie('authToken', token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax',
+            maxAge: 60 * 60 * 1000
+        });
+
         return res.status(200).json({ token, user });
     } catch (e) {
         return res.status(500).json({ message: `Internal server error ${e}` });
     }
+});
+
+app.post('/logout', (req, res) => {
+    res.clearCookie('authToken');
+    return res.status(200).json({ message: 'sesion cerrada' }
+    );
 });
 
 app.post('/logingoogle', async (req, res) => {
@@ -98,6 +123,12 @@ app.post('/register', async (req, res) => {
             return res.status(500).json({ message: 'No se pudo iniciar sesión después del registro' });
         }
 
+        res.cookie('authToken', token, {
+            httpOnly: true,
+            maxAge: 3600000, 
+            sameSite: 'lax',
+            secure: false 
+        });
         return res.status(201).json({ token, user, message: 'Usuario creado e iniciado sesión exitosamente' });
     } catch (e) {
         console.error('❌ ERROR EN /register:', e);
@@ -110,3 +141,4 @@ app.get('/', (req, res) => {
 });
 
 module.exports = app;
+

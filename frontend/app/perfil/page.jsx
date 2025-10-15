@@ -1,31 +1,26 @@
 'use client'
-import { Box, Container, Paper, Typography, Avatar, Button, IconButton, Tooltip } from '@mui/material'
+import { Box, Container, Typography, Avatar, Button, IconButton, Tooltip } from '@mui/material'
 import Input from '../components/Input'
-import ButtonCustom from '../components/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState, useEffect } from 'react';
-
+import { getPerfil } from './perfil';
 
 export default function () {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [firstName, setFirstName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const id = 1;
-                const response = await fetch(`http://localhost:30001/api/user/${id}`);
-                if (!response.ok) {
-                    throw new Error(`Server Error: ${response.status}`);
-                }
+                const id = 4;
+                const user = await getPerfil(id);
 
-                const data = await response.json();
-                setFirstName(data.firstName);
-                setLastName(data.lastName);
-                setEmail(data.email);
-                setPassword(data.password);
+                if (user) {
+                    setFirstName(user.username);
+                    setEmail(user.email);
+                    setPassword(user.password);
+                }
 
             } catch (error) {
                 console.error("Error: ", error);
@@ -46,6 +41,8 @@ export default function () {
                 gap: 3,
                 justifySelf: "center",
                 alignSelf: "center",
+                marginTop: 5,
+                marginBottom: 5,
             }}
             maxWidth="md"
         >
@@ -66,7 +63,7 @@ export default function () {
                 >
                     Administra tu información personal dentro de PyCraft.
                 </Typography>
-                <Box component="hr" sx={{ flexGrow: 1, borderColor: "secondary.main" }} />
+                <Box component="hr" sx={{ flexGrow: 2, borderColor: "secondary.main", width: "100%" }} />
             </Box>
             <Box sx={{
                 display: "flex",
@@ -166,35 +163,6 @@ export default function () {
 
             }}>
                 <Box sx={{
-                    display: "flex",
-                    width: "100%",
-                    alignItems: "center",
-                    gap: 2
-
-                }}>
-                    <Input
-                        label="Nombre"
-                        value={firstName}
-                        setValue={setFirstName}
-                        sx={{ flex: 1 }}
-                        error=""
-                        setError={
-                            () => {}
-                        }
-                    />
-                    <Input
-                        label="Apellido"
-                        value={lastName}
-                        setValue={setLastName}
-                        sx={{ flex: 1 }}
-                        error=""
-                        setError={
-                            () => {}
-                        }
-
-                    />
-                </Box>
-                <Box sx={{
                     width: "50%",
                     display: "flex",
                     flexDirection: "column",
@@ -202,13 +170,23 @@ export default function () {
                 }}
                 >
                     <Input
+                        label="Nombre de Usuario"
+                        value={firstName}
+                        setValue={setFirstName}
+                        error=""
+                        sx={{ with: 1 }}
+                        setError={
+                            () => { }
+                        }
+                    />
+                    <Input
                         label="correo"
                         value={email}
                         setValue={setEmail}
                         sx={{ with: 1 }}
                         error=""
                         setError={
-                            () => {}
+                            () => { }
                         }
 
                     />
@@ -219,17 +197,30 @@ export default function () {
                         sx={{ with: 1 }}
                         error=""
                         setError={
-                            () => {}
+                            () => { }
                         }
                         type="pass"
                     />
-                        
+
 
                 </Box>
-                <ButtonCustom
-                    type="primary" sx={{ width: "11rem", padding: "2rem", marginTop: "1rem" }}>
+                <Button
+                    sx={{
+                        marginTop: "3rem",
+                        p : 1,
+                        bgcolor: "primary.main",
+                        color: "primary.contrastText",
+                        '&:hover': {
+                            color: "primary.main",
+                            bgcolor: "transparent",
+                            border:"1px solid",
+                            borderColor:"primary.main"
+                        },
+                        width: "25%",
+                    }}
+                >
                     Guardar Cambios
-                </ButtonCustom>
+                </Button>
             </Box>
         </Container>
 

@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+
 const VIEW_DIRECTION = 'http://localhost:3000'
 
 app.use(cors({
@@ -12,6 +13,10 @@ const AuthenticacionService = require('../services/authenticationService');
 const UserRepository = require('../repository/userRepository');
 const bcrypt = require('bcrypt');
 const repository = new UserRepository();
+
+const routerUser = require('./Routers/user');
+app.use(routerUser);
+
 app.use(express.json());
 
 app.post('/login', async (req, res) => {
@@ -108,34 +113,6 @@ app.post('/register', async (req, res) => {
 app.get('/', (req, res) => {
     res.send('Bienvenido a PyCraft');
 });
-
-
-
-
-let users = [
-    {
-        id: 1,
-        firstName: "Juan ",
-        lastName: "Perez Garcia",
-        email: "perezjuan@gmail.com",
-        password:"PZR234"
-    }
-]
-
-app.get('/api/user/:id', (req, res) => {
-    const id = req.params.id;
-    const user = users.find(us => us.id == id);
-
-    if(!user){
-        return res.status(404).send(`usuario no encontrado`);
-    }
-
-    res.json(user);
-
-});
-
-
-
 
 module.exports  = app;
 

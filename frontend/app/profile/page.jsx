@@ -3,9 +3,12 @@ import { Box, Container, Typography, Avatar, Button, IconButton, Tooltip } from 
 import Input from '../components/Input'
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState, useEffect } from 'react';
-import { getPerfil } from './perfil';
+import { useRouter } from 'next/navigation';
+import { getProfile } from './profile';
 
-export default function () {
+export default function profilePage() {
+    const router = useRouter();
+
     const [firstName, setFirstName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -14,7 +17,7 @@ export default function () {
         const fetchUser = async () => {
             try {
                 const id = 4;
-                const user = await getPerfil(id);
+                const user = await getProfile(id);
 
                 if (user) {
                     setFirstName(user.username);
@@ -23,13 +26,17 @@ export default function () {
                 }
 
             } catch (error) {
-                console.error("Error: ", error);
+                if(error.message === 'No autorizado') {
+                    router.push('/login');
+                } else {
+                    console.error("Error: ", error);
+                }
             }
         };
 
         fetchUser();
 
-    }, []);
+    }, [router]);
 
 
 

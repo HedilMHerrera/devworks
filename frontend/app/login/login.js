@@ -2,6 +2,8 @@
 import axios from "axios";
 const API_URL = 'http://localhost:30001';
 
+axios.defaults.withCredentials = true;
+
 export const loginGoogle = async (token) => {
     const payload = { token };
     const url = "/logingoogle";

@@ -72,8 +72,8 @@ app.post("/logingoogle", async(req, res) => {
       maxAge: 60 * 60 * MAX_TIME,
     });
 
-    const ww = "";
-    console.log(ww);
+    const wt = "";
+    console.log(wt);
 
     return res.status(200).json({ token, user });
   } catch (e) {

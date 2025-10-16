@@ -2,6 +2,8 @@
 import axios from "axios";
 const API_URL = "http://localhost:30001";
 
+axios.defaults.withCredentials = true;
+
 export const loginGoogle = async(token) => {
   const payload = { token };
   const url = "/logingoogle";
@@ -10,17 +12,15 @@ export const loginGoogle = async(token) => {
 
 const loginStructure =  async(payload, url) => {
   try {
-    const response  = await axios.post(API_URL+url, payload);
+    const response  = await axios.post(API_URL+url, payload,{ withCredentials: true });
     return { success: true, data: response.data, message:"Ingreso Exitoso" };
   } catch (e){
     if (e.response){
       if (e.response.status === 401){
         return { success: false, message: "Usuario o contraseña incorrectos" };
-      } else {
-        return { success: false, message:"error del servidor: "+e.response.status };
       }
     }
-    return { message:"Error de Servidor : "+e };
+    return { success: false, message:"Error de Servidor : "+e };
   }
 };
 

@@ -7,8 +7,8 @@ const Charging = ({children}) => {
   const hasHydrated = useSessionZ.persist?.hasHydrated();
   const [hydrated, setHydrated] = useState(null);
   useEffect(() => {
-    setHydrated(hasHydrated)
-  },[hasHydrated])
+    setHydrated(hasHydrated);
+  },[hasHydrated]);
   return (hydrated===undefined || !hydrated ? 
     (<Box sx={{
       width:"100vh",

@@ -1,7 +1,7 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { Box, IconButton, TextField, Typography } from '@mui/material'
 import React, { useState } from 'react'
-const Input = ({ label, Icon, value, setValue, type, error, setError}) => {
+const Input = ({ label="", Icon, value, setValue, type, error, setError, sx}) => {
     const [showPass, setShowPass] = useState(false);
     const handleChange = (e) => {
         setError("");
@@ -10,6 +10,7 @@ const Input = ({ label, Icon, value, setValue, type, error, setError}) => {
     return (
     <Box
         sx={{
+            ...sx,
             display:"flex",
             flexDirection:"column",
             gap:0.5,
@@ -41,7 +42,7 @@ const Input = ({ label, Icon, value, setValue, type, error, setError}) => {
                     bgcolor:'secondary.main',
                     borderStyle:'solid',
                     borderWidth:1,
-                    borderColor:(error.length == 0) ? "background.contrastText":"red",
+                    borderColor:((error || '').length == 0) ? "background.contrastText":"red",
                     fontSize:20,
                     '& :focus':{
                         borderWidth:1,

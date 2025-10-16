@@ -10,7 +10,7 @@ class AuthenticacionService{
     const user = await this._repository.login(username, pass);
     let token = null;
     if (user){
-      token = jwt.sign({ username }, secretKey, { expiresIn:"1h" });
+      token = jwt.sign({ id: user.id, username: user.username }, secretKey, { expiresIn:"1h" } );
     }
     return { token, user };
   }
@@ -23,7 +23,7 @@ class AuthenticacionService{
     }
     const user = await this._repository.loginGoogle(email);
     if (user){
-      token = jwt.sign({ email }, secretKey, { expiresIn:"1h" });
+      token = jwt.sign({ id: user.id, username: user.username }, secretKey, { expiresIn:"1h" } );
     }
     return { token, user };
   }

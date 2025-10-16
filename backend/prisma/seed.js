@@ -1,44 +1,44 @@
-const { PrismaClient } = require('@prisma/client');
-const bcrypt = require('bcrypt');
+const { PrismaClient } = require("@prisma/client");
+const bcrypt = require("bcrypt");
 const prisma = new PrismaClient();
 
 async function main() {
   const [adminRol, teacherRol, studentRol] = await Promise.all([
     prisma.role.upsert({
-      where: { name: 'admin' },
+      where: { name: "admin" },
       update: {},
-      create: { name: 'admin' },
+      create: { name: "admin" },
     }),
     prisma.role.upsert({
-      where: { name: 'teacher' },
+      where: { name: "teacher" },
       update: {},
-      create: { name: 'teacher' },
+      create: { name: "teacher" },
     }),
     prisma.role.upsert({
-      where: { name: 'student' },
+      where: { name: "student" },
       update: {},
-      create: { name: 'student' },
+      create: { name: "student" },
     }),
   ]);
-    const passwordHash = await bcrypt.hash('123456', 10);
+  const passwordHash = await bcrypt.hash("123456", 10);
 
   await prisma.user.createMany({
     data: [
       {
-        username: 'admin_user',
-        email: 'admin@example.com',
+        username: "admin_user",
+        email: "admin@example.com",
         password: passwordHash,
         roleId: adminRol.id,
       },
       {
-        username: 'teacher_user',
-        email: 'teacher@example.com',
+        username: "teacher_user",
+        email: "teacher@example.com",
         password: passwordHash,
         roleId: teacherRol.id,
       },
       {
-        username: 'student_user',
-        email: 'student@example.com',
+        username: "student_user",
+        email: "student@example.com",
         password: passwordHash,
         roleId: studentRol.id,
       },
@@ -50,8 +50,8 @@ async function main() {
 
 main()
   .catch((e) => {
-    console.error('error al crear seeds : ', e);
+    console.error("error al crear seeds : ", e);
   })
-  .finally(async () => {
+  .finally(async() => {
     await prisma.$disconnect();
   });

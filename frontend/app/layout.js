@@ -1,17 +1,17 @@
 import "./globals.css";
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 
 import Notify from "./notify";
 import Theme from "./theme";
 import { Box } from "@mui/material";
 import { MenuCustom } from "./components/Menu";
 import Charging from "./components/Charging";
-import { GoogleOAuthProvider } from '@react-oauth/google';
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
-const userId = '221401385773-3r3ha0nb21ukkef1bi1dgn40ci6srgtc.apps.googleusercontent.com';
+const userId = "221401385773-3r3ha0nb21ukkef1bi1dgn40ci6srgtc.apps.googleusercontent.com";
 export default function RootLayout({ children }) {
   return (
     <html lang="es">
@@ -24,16 +24,16 @@ export default function RootLayout({ children }) {
             flexDirection:"column",
             alignItems:"center",
             padding:0,
-            margin:0
+            margin:0,
           }}
         >
           <GoogleOAuthProvider clientId={ userId }>
-          <Charging>
-            <Notify>
-              <Box
-                width="100%"
-              >
-                
+            <Charging>
+              <Notify>
+                <Box
+                  width="100%"
+                >
+
                   <MenuCustom />
                   <Box
                     component="main"
@@ -50,13 +50,13 @@ export default function RootLayout({ children }) {
                       width="100%"
                       zIndex={1}
                     >
-                      
-                        {children}
-                      
+
+                      {children}
+
                     </Box>
                   </Box>
-              </Box>
-            </Notify>
+                </Box>
+              </Notify>
             </Charging>
           </GoogleOAuthProvider>
         </Box>

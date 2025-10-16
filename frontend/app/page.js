@@ -1,6 +1,6 @@
-'use client'
-import Image from "next/image";
-import SvgIcon from "@mui/material";
+"use client";
+//import Image from "next/image";
+//import SvgIcon from "@mui/material";
 import { Paper, Container, Typography, Box } from "@mui/material";
 import SnakeIcon from "./snakeicon/SnakeIcon";
 export default function Home() {
@@ -20,62 +20,62 @@ export default function Home() {
         <Paper
           sx={{
             p:{
-              xs:2, sm:3, md:5
+              xs:2, sm:3, md:5,
             },
             fontSize:{
               xs:35, sm:30, md:25,
             },
             display:"flex",
             flexWrap:"wrap",
-            flexDirection:'column'
-          }}
-        >
-        <Box
-          sx={{
-            width:"80%"
-          }}
-        >
-          <Typography
-            variant="h2"
-          >
-            Paper de prueba
-          </Typography>
-          prueba de texto
-        </Box>
-        <Box
-          sx={{
-            width:"20%",
-            display:"flex",
             flexDirection:"column",
-            justifyContent:"end",
-            gap:1,
           }}
         >
           <Box
             sx={{
-              backgroundColor:"primary.main",
-              color:"primary.contrastText",
-              p:2,
-              borderRadius:2,
-              width:'fit-content',
-              height: 'fit-content'
+              width:"80%",
             }}
           >
-            Etiqueta
+            <Typography
+              variant="h2"
+            >
+            Paper de prueba
+            </Typography>
+          prueba de texto
           </Box>
           <Box
             sx={{
-              backgroundColor:"primary.main",
-              color:"primary.contrastText",
-              p:2,
-              borderRadius:2,
-              width:'fit-content',
-              height: 'fit-content'
+              width:"20%",
+              display:"flex",
+              flexDirection:"column",
+              justifyContent:"end",
+              gap:1,
             }}
           >
+            <Box
+              sx={{
+                backgroundColor:"primary.main",
+                color:"primary.contrastText",
+                p:2,
+                borderRadius:2,
+                width:"fit-content",
+                height: "fit-content",
+              }}
+            >
+            Etiqueta
+            </Box>
+            <Box
+              sx={{
+                backgroundColor:"primary.main",
+                color:"primary.contrastText",
+                p:2,
+                borderRadius:2,
+                width:"fit-content",
+                height: "fit-content",
+              }}
+            >
             Botón
+            </Box>
           </Box>
-        </Box>
         </Paper>
       </Container>
     </div>

@@ -72,6 +72,9 @@ app.post("/logingoogle", async(req, res) => {
       maxAge: 60 * 60 * MAX_TIME,
     });
 
+    const uno = "";
+    console.log(uno);
+
     return res.status(200).json({ token, user });
   } catch (e) {
     return res.status(500).json({ message: `Internal server error ${e}` });

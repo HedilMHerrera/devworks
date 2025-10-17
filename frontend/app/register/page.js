@@ -80,7 +80,7 @@ export default function Page() {
       }
 
       setStep(2);
-    } catch (e) {
+    } catch (_) {
       setEmailError("Error al validar el correo");
     }
     setIsLoading(false);
@@ -137,7 +137,7 @@ export default function Page() {
           enqueueSnackbar(res.message || "Error al registrar", { variant: "error" });
         }
       }
-    } catch (e) {
+    } catch (_) {
       enqueueSnackbar("Error del servidor", { variant: "error" });
     }
     setIsLoading(false);

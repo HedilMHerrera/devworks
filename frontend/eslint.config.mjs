@@ -37,7 +37,7 @@ const eslintConfig = [
       "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
       "no-console": "warn",
     },
-
+    files: ["**/*.{js,jsx}"],
   },
 ];
 

@@ -10,7 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint . && echo ' ESLint: análisis completado con éxito'"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

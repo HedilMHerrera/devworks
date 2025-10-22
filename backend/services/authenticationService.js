@@ -7,8 +7,8 @@ class AuthenticacionService {
     this._googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
   }
 
-  async login(username, pass) {
-    const user = await this._repository.login(username, pass);
+  async login(username, pass, isVerifiedLogin = false) {
+    const user = await this._repository.login(username, pass, isVerifiedLogin);
     let token = null;
     if (user) {
       token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });

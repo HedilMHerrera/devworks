@@ -36,6 +36,7 @@ jobs:
         working-directory: ./backend
     env:
       DATABASE_URL: postgresql://postgres:123@localhost:5432/pycraft_dev?schema=public
+      JWT_SECRET: test_secret_key_for_ci
 
     steps:
       - uses: actions/checkout@v5

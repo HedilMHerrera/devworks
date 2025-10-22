@@ -105,6 +105,6 @@ const AsideMenuBar= ({ data }) => {
 
 export const AsideMenu = () => {
   const user = useSessionZ((state) => state.user);
-  return user && <AsideMenuBar data = { user.role }/>;
+  return user && user.role && <AsideMenuBar data = { user.role }/>;
 };
 

@@ -1,47 +1,56 @@
-const secretKey = "secret";
 const jwt = require("jsonwebtoken");
-const tokenDecode = require("jwt-decode");
-class AuthenticacionService{
-  constructor(repository){
+const { OAuth2Client } = require("google-auth-library");
+
+class AuthenticacionService {
+  constructor(repository) {
     this._repository = repository;
+    this._googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
   }
 
-  async login(username, pass){
+  async login(username, pass) {
     const user = await this._repository.login(username, pass);
     let token = null;
-    if (user){
-      token = jwt.sign({ id: user.id, username: user.username }, secretKey, { expiresIn:"1h" } );
+    if (user) {
+      token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
     }
     return { token, user };
   }
 
-  async loginGoogleS(tokenUser){
-    const { email, email_verified } = tokenDecode.jwtDecode(tokenUser);
-    let token = null;
-    if (!email_verified){
-      return { token, user:null };
-    }
-    const user = await this._repository.loginGoogle(email);
-    if (user){
-      token = jwt.sign({ id: user.id, username: user.username }, secretKey, { expiresIn:"1h" } );
-    }
-    return { token, user };
-  }
+  async loginGoogleS(tokenUser) {
+    try {
+      const ticket = await this._googleClient.verifyIdToken({
+        idToken: tokenUser,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+      const payload = ticket.getPayload();
+      const { email, given_name, family_name, sub: googleId } = payload;
 
-  /*verifyToken(req, res, next){
-    const header = req.header("Authorization") || "";
-    const token = header.split(" ")[1];
-    if(!token){
-        return res.status(401).json({message:"Token no existe"});
+      let user = await this._repository.findByEmail(email);
+
+      if (!user) {
+        console.log(`Usuario con email ${email} no encontrado. Creando nuevo usuario...`);
+        user = await this._repository.createUser({
+          name: given_name || "Usuario",
+          lastName: family_name || "Google",
+          email: email,
+          password: null,
+          googleId: googleId,
+          phone: null,
+          isVerified: true,
+        });
+      }
+
+      const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
+
+      const roleName = user.role.name;
+      const { password: _, role: __, roleId: ___, ...safeUser } = user;
+      const finalUser = { role: roleName, ...safeUser };
+      return { token, user: finalUser };
+    } catch (error) {
+      console.error("Error en la autenticación con Google:", error);
+      return { token: null, user: null };
     }
-    try{
-        const payload = jwt.verify(token, secretKey);
-        req.username = payload.username;
-        next();
-    } catch (e){
-        return res.status(403).json({message: "Token no Valido :"+e});
-    }
-}*/
+  }
 }
 
 module.exports = AuthenticacionService;

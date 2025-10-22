@@ -17,9 +17,25 @@ jobs:
   backend:
     name: Backend
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        ports:
+          - "5432:5432"
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: "123"
+          POSTGRES_DB: pycraft_dev
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
     defaults:
       run:
         working-directory: ./backend
+    env:
+      DATABASE_URL: postgresql://postgres:123@localhost:5432/pycraft_dev?schema=public
 
     steps:
       - uses: actions/checkout@v5
@@ -31,7 +47,11 @@ jobs:
           
 
       - name: Install Dependencies
-        run: npm install  
+        run: npm install
+      - name: Generate Prisma Client
+        run: npx prisma generate
+      - name: Apply Prisma Migrations
+        run: npx prisma migrate deploy
       - name: Run Eslint
         run: npm run lint
       - name: Run test

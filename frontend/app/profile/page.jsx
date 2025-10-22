@@ -4,39 +4,24 @@ import Input from "../components/Input";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getProfile } from "./profile";
+import { useSessionZ } from "../context/SessionContext";
 
 export default function ProfilePage() {
   const router = useRouter();
+  const user = useSessionZ((state) => state.user);
 
-  const [firstName, setFirstName] = useState("");
-  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    const fetchUser = async() => {
-      try {
-        const id = 4;
-        const user = await getProfile(id);
-
-        if (user) {
-          setFirstName(user.username);
-          setEmail(user.email);
-          setPassword(user.password);
-        }
-
-      } catch (error) {
-        if (error.message === "No autorizado") {
-          router.push("/login");
-        } else {
-          console.error("Error: ", error);
-        }
-      }
-    };
-
-    fetchUser();
-
-  }, [router]);
+    if (!user) {
+      router.push("/login");
+    } else {
+      setName(user.name || "");
+      setLastName(user.lastName || "");
+    }
+  }, [user, router]);
 
   return (
     <Container
@@ -174,9 +159,9 @@ export default function ProfilePage() {
         }}
         >
           <Input
-            label="Nombre de Usuario"
-            value={firstName}
-            setValue={setFirstName}
+            label="Nombre"
+            value={name}
+            setValue={setName}
             error=""
             sx={{ with: 1 }}
             setError={
@@ -184,18 +169,17 @@ export default function ProfilePage() {
             }
           />
           <Input
-            label="correo"
-            value={email}
-            setValue={setEmail}
-            sx={{ with: 1 }}
+            label="Apellidos"
+            value={lastName}
+            setValue={setLastName}
             error=""
+            sx={{ with: 1 }}
             setError={
               () => { }
             }
-
           />
           <Input
-            label="contraseña"
+            label="Contraseña"
             value={password}
             setValue={setPassword}
             sx={{ with: 1 }}
@@ -203,9 +187,7 @@ export default function ProfilePage() {
             setError={
               () => { }
             }
-            type="pass"
           />
-
         </Box>
         <Button
           sx={{

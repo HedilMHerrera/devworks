@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const SECRET_KEY = process.env.SECRET_KEY || "secret";
+const JWT_SECRET = process.env.JWT_SECRET || "secret";
 
 function verifyToken(req, res, next) {
   const token = req.cookies.authToken;
@@ -8,9 +8,11 @@ function verifyToken(req, res, next) {
   }
 
   try {
-    const decoded = jwt.verify(token, SECRET_KEY);
+    const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
-    console.log(req.user);
+    if (process.env.NODE_ENV !== "test") {
+      console.log(req.user);
+    }
     next();
   } catch (error) {
     return res.status(403).send(error.message);

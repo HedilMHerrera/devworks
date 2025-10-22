@@ -6,8 +6,17 @@ axios.defaults.withCredentials = true;
 
 export const loginGoogle = async(token) => {
   const payload = { token };
-  const url = "/logingoogle";
-  return await loginStructure(payload, url);
+  try {
+    const response = await axios.post(`${API_URL}/logingoogle`, payload, { withCredentials: true });
+    return { success: true, data: response.data, message: "Ingreso Exitoso" };
+  } catch (e) {
+    if (e.response) {
+      if (e.response.status === 401) {
+        return { success: false, message: e.response.data?.message || "Token de Google inválido" };
+      }
+    }
+    return { success: false, message: "Error de Servidor: " + e.message };
+  }
 };
 
 const loginStructure =  async(payload, url) => {
@@ -24,9 +33,9 @@ const loginStructure =  async(payload, url) => {
   }
 };
 
-export const login = async(name, password)=>{
+export const login = async(email, password)=>{
   const payload = {
-    "username" : name,
+    "email" : email,
     "password" : password,
   };
   const url = "/login";

@@ -20,11 +20,35 @@ model User {
   password  String
   roleId    Int
   role      Role     @relation(fields:[roleId], references: [id])
+  registers  Register[]
   createdAt DateTime @default(now())
+  groups   Group[]
 }
 
 model Role {
   id        Int      @id @default(autoincrement())
   name      String   @unique
   users     User[]
+}
+
+model Group {
+  id        Int      @id @default(autoincrement())
+  title     String
+  description String 
+  registers Register[]
+  idTutor   Int
+  createdAt DateTime @default(now())
+  startDate DateTime
+  endDate   DateTime
+  tutor     User    @relation(fields: [idTutor], references: [id])
+}
+
+model Register{
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  userId    Int
+  groupId   Int
+  user      User     @relation(fields: [userId], references: [id])
+  group     Group    @relation(fields: [groupId], references: [id])
+
 }

@@ -16,10 +16,12 @@ const AuthenticacionService = require("../services/authenticationService");
 const UserRepository = require("../repository/userRepository");
 const bcrypt = require("bcrypt");
 const routerUser = require("./Routers/user");
+const routerGroup = require("./Routers/groups");
 const repository = new UserRepository();
 app.use(cookieParser());
 app.use(express.json());
 app.use("", routerUser);
+app.use("", routerGroup);
 
 app.post("/login", async(req, res) => {
   try {
@@ -71,9 +73,6 @@ app.post("/logingoogle", async(req, res) => {
       sameSite: "lax",
       maxAge: 60 * 60 * MAX_TIME,
     });
-
-    const wt = "";
-    console.log(wt);
 
     return res.status(200).json({ token, user });
   } catch (e) {

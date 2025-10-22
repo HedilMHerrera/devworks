@@ -105,6 +105,14 @@ class UserRespository{
       },
     });
   }
+
+  async getUser(id){
+    const user = await this._prisma.user.findUnique({
+      where:{ id },
+      include:{ role:true },
+    });
+    return user;
+  }
 }
 
 module.exports = UserRespository;

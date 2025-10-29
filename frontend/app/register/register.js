@@ -68,6 +68,7 @@ export const checkVerificationStatus = async(email) => {
     const response = await axios.get(`${API_URL}/check-verification-status`, { params: { email } });
     return { success: true, isVerified: response.data.isVerified };
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error("Polling error:", e.message);
     return { success: false, isVerified: false };
   }

@@ -7,7 +7,6 @@ const VIEW_DIRECTION = "http://localhost:3000";
 const cookieParser = require("cookie-parser");
 const MAX_TIME = 1000;
 const nodemailer = require("nodemailer");
-const crypto = require("crypto");
 
 app.use(cors({
   origin: VIEW_DIRECTION,
@@ -19,6 +18,7 @@ const AuthenticacionService = require("../services/authenticationService");
 const UserRepository = require("../repository/userRepository");
 const bcrypt = require("bcrypt");
 const routerUser = require("./Routers/user");
+const routerAdmin = require("./Routers/admin");
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -32,6 +32,7 @@ const repository = new UserRepository();
 app.use(cookieParser());
 app.use(express.json());
 app.use("", routerUser);
+app.use("", routerAdmin);
 
 app.post("/login", async(req, res) => {
   try {
@@ -143,6 +144,7 @@ app.post("/register", async(req, res) => {
     });
 
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error("ERROR EN /register:", e);
     return res.status(500).json({ message: `Error interno del servidor: ${e.message}` });
   }
@@ -168,7 +170,7 @@ app.post("/verify-email", async(req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await repository.createUser({
+    await repository.createUser({
       name,
       lastName,
       email,

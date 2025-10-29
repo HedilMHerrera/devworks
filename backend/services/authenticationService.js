@@ -28,6 +28,7 @@ class AuthenticacionService {
       let user = await this._repository.findByEmail(email);
 
       if (!user) {
+        // eslint-disable-next-line no-console
         console.log(`Usuario con email ${email} no encontrado. Creando nuevo usuario...`);
         user = await this._repository.createUser({
           name: given_name || "Usuario",
@@ -47,6 +48,7 @@ class AuthenticacionService {
       const finalUser = { role: roleName, ...safeUser };
       return { token, user: finalUser };
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error("Error en la autenticación con Google:", error);
       return { token: null, user: null };
     }

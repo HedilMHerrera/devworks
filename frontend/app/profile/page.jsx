@@ -18,8 +18,8 @@ export default function ProfilePage() {
     if (!user) {
       router.push("/login");
     } else {
-      setName(user.name || "");
-      setLastName(user.lastName || "");
+      setName(user.name);
+      setLastName(user.lastName);
     }
   }, [user, router]);
 
@@ -163,7 +163,7 @@ export default function ProfilePage() {
             value={name}
             setValue={setName}
             error=""
-            sx={{ with: 1 }}
+            sx={{ width: 1 }}
             setError={
               () => { }
             }
@@ -173,7 +173,7 @@ export default function ProfilePage() {
             value={lastName}
             setValue={setLastName}
             error=""
-            sx={{ with: 1 }}
+            sx={{ width: 1 }}
             setError={
               () => { }
             }
@@ -182,7 +182,7 @@ export default function ProfilePage() {
             label="Contraseña"
             value={password}
             setValue={setPassword}
-            sx={{ with: 1 }}
+            sx={{ width: 1 }}
             error=""
             setError={
               () => { }

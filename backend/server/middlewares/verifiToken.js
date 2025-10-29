@@ -11,6 +11,7 @@ function verifyToken(req, res, next) {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
     if (process.env.NODE_ENV !== "test") {
+      // eslint-disable-next-line no-console
       console.log(req.user);
     }
     next();

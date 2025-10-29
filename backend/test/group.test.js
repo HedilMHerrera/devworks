@@ -70,7 +70,7 @@ const mockUserRepository = {
 
 const mockRepositoryPrisma = {
   getAllGroups: jest.fn().mockResolvedValue(groups),
-  createGroup: jest.fn().mockReturnValue({ id:1 }),
+  createGroup: jest.fn().mockReturnValue({ id:1, code:"qweqwe" }),
   updateGroup: jest.fn().mockImplementation((id, data) => {
     const group = groups.find((i) => i.id === id) ?? null;
     return (group) ? { ...group, ...data }:group;
@@ -79,6 +79,7 @@ const mockRepositoryPrisma = {
   getGroup: jest.fn().mockImplementation((data) => groups.find((i) => i.id === data)),
   getTeacherGroups: jest.fn().mockImplementation((id) => groups.filter((i) => i.idTutor ===id )),
   getStudentRegister: jest.fn().mockImplementation((id) => registers.filter((i) => i.userId === id)),
+  getGroupCode: jest.fn().mockReturnValue(null),
 };
 
 const payload = {
@@ -252,5 +253,12 @@ describe("Operations on the groups", () => {
     expect(group.success).toBe(false);
     expect(group.group).not.toBeUndefined();
     expect(group.group).toBeNull();
+  });
+
+  test("getUniqueCodeForClass", async()=>{
+    const groupService = new GroupService(mockRepositoryPrisma, mockUserRepository);
+    const group = await groupService.addGroup(payload);
+    expect(group.code).not.toBeUndefined();
+    expect(group.code).not.toBeNull();
   });
 });

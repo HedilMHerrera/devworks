@@ -1,0 +1,28 @@
+.paperNew{
+    padding: 30px;
+    align-items: start;
+    gap: 15px;
+    width: 400px;
+}
+
+.dateContent{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+@media (max-width:700px) {
+    .dateContent{
+        grid-template-columns: 1fr;
+    }
+}
+
+.fullContainerFade{
+    position: relative;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}

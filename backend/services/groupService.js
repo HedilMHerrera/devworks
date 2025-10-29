@@ -6,6 +6,24 @@ class GroupService{
     this._userRepository = userRepository ?? null;
   }
 
+  async _createCode(){
+    const chars = "abcdefghijkmnopqrstuvwxyz0123456789";
+    let isFinished = false;
+    let res = "";
+    while (!isFinished){
+      let code = "";
+      for (let i = 0; i < 6; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      res = code.slice(0, 3) + "-" + code.slice(3);
+      const codeAux = await this._repository.getGroupCode(res);
+      if (!codeAux){
+        isFinished=true;
+      }
+    }
+    return res;
+  }
+
   async addGroup(payload){
     const fechaActual = new Date();
     const startDate = payload.startDate;
@@ -28,7 +46,8 @@ class GroupService{
       return { success: false, message:"usuario inexistente o no profesor" };
     }
 
-    const group = await this._repository.createGroup(payload);
+    const code = await this._createCode();
+    const group = await this._repository.createGroup({ ...payload, code });
     if (!group){
       return {
         message: "Error al añadir, verifique los datos",

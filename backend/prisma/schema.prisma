@@ -40,6 +40,7 @@ model Group {
   createdAt DateTime @default(now())
   startDate DateTime
   endDate   DateTime
+  code      String  @unique
   tutor     User    @relation(fields: [idTutor], references: [id])
 }
 

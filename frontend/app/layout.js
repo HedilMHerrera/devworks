@@ -32,6 +32,7 @@ export default function RootLayout({ children }) {
               <Notify>
                 <Box
                   width="100%"
+                  height="100%"
                 >
 
                   <MenuCustom />

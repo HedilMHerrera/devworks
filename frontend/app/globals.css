@@ -5,6 +5,8 @@ body {
   padding: 0;
   top: 0;
   left: 0;
+  height: 100%;
+  width: 100%;
 }
 
 body {
@@ -16,6 +18,7 @@ body {
 }
 main{
   margin-top: 66px;
+  height: 100%;
 }
 
 hr{

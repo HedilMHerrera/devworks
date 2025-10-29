@@ -53,6 +53,13 @@ class groupRpository{
     return registers;
   }
 
+  async getGroupCode(code){
+    const data = this._prisma.group.findUnique({
+      where:{ code },
+    });
+    return data;
+  }
+
 }
 
 module.exports = groupRpository;

@@ -10,9 +10,6 @@ function verifyToken(req, res, next) {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
-    if (process.env.NODE_ENV !== "test") {
-      console.log(req.user);
-    }
     next();
   } catch (error) {
     return res.status(403).send(error.message);

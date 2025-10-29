@@ -13,13 +13,15 @@ export default function ProfilePage() {
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     if (!user) {
       router.push("/login");
     } else {
-      setName(user.name || "");
-      setLastName(user.lastName || "");
+      setName(user.name);
+      setLastName(user.lastName);
+      setEmail(user.email);
     }
   }, [user, router]);
 
@@ -43,7 +45,7 @@ export default function ProfilePage() {
             fontWeight: 400,
           }}
         >
-                    Perfil de Usuario
+          Perfil de Usuario
         </Typography>
         <Typography
           sx={{
@@ -51,7 +53,7 @@ export default function ProfilePage() {
             color: "background.contrastText",
           }}
         >
-                    Administra tu información personal dentro de PyCraft.
+          Administra tu información personal dentro de PyCraft.
         </Typography>
         <Box component="hr" sx={{ flexGrow: 2, borderColor: "secondary.main", width: "100%" }} />
       </Box>
@@ -83,7 +85,7 @@ export default function ProfilePage() {
                 fontWeight: 400,
               }}
             >
-                            Sube tu avatar
+              Sube tu avatar
             </Typography>
             <Typography
               sx={{
@@ -91,8 +93,8 @@ export default function ProfilePage() {
                 color: "background.contrastText",
               }}
             >
-                            El avatar debe tener al menos 300x300 píxeles.<br />
-                            Se admiten archivos .png, .jpg y .jpeg.
+              El avatar debe tener al menos 300x300 píxeles.<br />
+              Se admiten archivos .png, .jpg y .jpeg.
             </Typography>
           </Box>
 
@@ -115,7 +117,7 @@ export default function ProfilePage() {
 
             },
           }}>
-                        subir avatar
+            subir avatar
           </Button>
           <Box sx={{
             bgcolor: "#ef4444",
@@ -151,19 +153,13 @@ export default function ProfilePage() {
         padding: 3,
 
       }}>
-        <Box sx={{
-          width: "50%",
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-        }}
-        >
+        <Box sx={{ display: "flex", gap: 2 }}>
           <Input
             label="Nombre"
             value={name}
             setValue={setName}
+            sx={{ flex:1 }}
             error=""
-            sx={{ with: 1 }}
             setError={
               () => { }
             }
@@ -172,8 +168,26 @@ export default function ProfilePage() {
             label="Apellidos"
             value={lastName}
             setValue={setLastName}
+            sx={{ flex:1 }}
             error=""
-            sx={{ with: 1 }}
+            setError={
+              () => { }
+            }
+          />
+        </Box>
+        <Box sx={{
+          width: "50%",
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+        }}
+        >
+          <Input
+            label="email"
+            value={email}
+            setValue={setEmail}
+            error=""
+            sx={{ width: 1 }}
             setError={
               () => { }
             }
@@ -182,7 +196,7 @@ export default function ProfilePage() {
             label="Contraseña"
             value={password}
             setValue={setPassword}
-            sx={{ with: 1 }}
+            sx={{ width: 1 }}
             error=""
             setError={
               () => { }
@@ -192,19 +206,19 @@ export default function ProfilePage() {
         <Button
           sx={{
             marginTop: "3rem",
-            p : 1,
+            p: 1,
             bgcolor: "primary.main",
             color: "primary.contrastText",
             "&:hover": {
               color: "primary.main",
               bgcolor: "transparent",
-              border:"1px solid",
-              borderColor:"primary.main",
+              border: "1px solid",
+              borderColor: "primary.main",
             },
             width: "25%",
           }}
         >
-                    Guardar Cambios
+          Guardar Cambios
         </Button>
       </Box>
     </Container>

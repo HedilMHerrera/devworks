@@ -130,7 +130,7 @@ export default function Page() {
       if (res.success) {
         setOriginalVerificationCode(res.data.verificationCode);
         setStep(4);
-        enqueueSnackbar(res.message || "Revisa tu correo para el código de verificación.", { variant: "info" });
+        enqueueSnackbar(res.message || "Revisa tu correo para el código de verificación.", { variant: "success" });
       } else {
         if (res.code === 409) {
           const msg = (res.message || "").toLowerCase();

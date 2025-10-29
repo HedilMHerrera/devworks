@@ -53,6 +53,7 @@ async function main() {
 
 main()
   .catch((e) => {
+    // eslint-disable-next-line no-console
     console.error("error al crear seeds : ", e);
   })
   .finally(async() => {

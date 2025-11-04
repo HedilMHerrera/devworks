@@ -34,3 +34,13 @@ model Role {
   name      String   @unique
   users     User[]
 }
+
+
+model Topic {
+  id Int @id @default(autoincrement())
+  title String
+  description String
+  startDate DateTime
+  endDate DateTime
+}
+

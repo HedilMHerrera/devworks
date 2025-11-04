@@ -19,6 +19,7 @@ const UserRepository = require("../repository/userRepository");
 const bcrypt = require("bcrypt");
 const routerUser = require("./Routers/user");
 const routerAdmin = require("./Routers/admin");
+const routerTopic = require("./Routers/topic");
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -33,6 +34,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use("", routerUser);
 app.use("", routerAdmin);
+app.use("/api/topic", routerTopic);
 
 app.post("/login", async(req, res) => {
   try {

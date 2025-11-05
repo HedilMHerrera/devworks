@@ -15,6 +15,10 @@ import { enqueueSnackbar } from "notistack";
 import { TextValidator, NotIsVoid, HaveBetweenLength, DateIsNotBeforeNow, StartDateIsBeforeEndDate } from "@/app/validators/TextInputValidator";
 import { sendGroup } from "./createGroup";
 import { useSessionZ } from "@/app/context/SessionContext";
+import StepPeakComponent from "./components/StepPeakComponent";
+import HeaderTableTitle from "../components/HeaderTableTitle";
+import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
+import { ArrowLeft, ArrowRight, Create } from "@mui/icons-material";
 
 const Page = () => {
   const user = useSessionZ((state) => state.user);
@@ -29,6 +33,8 @@ const Page = () => {
   const [errorEndDate, setErrorEndDate] = useState("");
   const [code, setCode] = useState({ copied:false, code:"" });
   const [step, setStep] = useState(0);
+  const [checked, setChecked] = useState(true);
+  const [direction, setDirection] = useState("down");
   const handleCopied = async() => {
     await navigator.clipboard.writeText(code.code);
     setCode({ ...code, copied: !code.copied });
@@ -76,8 +82,22 @@ const Page = () => {
     const isValid = [response, responseStartDate, responseDescription, responseEndDate]
       .every((res) => res.isValid);
     if (isValid){
-      setStep(1);
+      handleStepChange(1);
     }
+  };
+
+  const handleStepChange = (newStep) => {
+    setDirection("down");
+    setChecked(false);
+
+    setTimeout(() => {
+      setStep(newStep);
+    }, 500);
+
+    setTimeout(() => {
+      setDirection("up");
+      setChecked(true);
+    }, 510);
   };
 
   const handleStep2 = async() => {
@@ -92,24 +112,38 @@ const Page = () => {
     if (response.success){
       setCode({ ...code, code: response.code } );
       enqueueSnackbar("Curso Creado Exitosamente", { variant:"success" });
-      setStep(2);
+      handleStepChange(2);
     } else {
       enqueueSnackbar(response.message, { variant:"error" });
     }
   };
   return (
     <Box className={ stylesNew.fullContainerFade }>
+      <HeaderTableTitle title="Registrar un Grupo" Icon={ CreateNewFolderIcon }>
+        <StepPeakComponent step={ step }>
+          <Box>
+            Datos Basicos
+          </Box>
+          <Box>
+            Configuracion de Tópicos
+          </Box>
+          <Box>
+            Código de Inscripción
+          </Box>
+        </StepPeakComponent>
+      </HeaderTableTitle>
       <Box
         display="flex"
-        sx={{
-          width:"500px",
-        }}
+        mt={2}
+        overflow="hidden"
+        flexDirection="column"
       >
-        <Slide direction="left" mountOnEnter in={step===0} timeout={100} unmountOnExit>
-          <Paper className={ `${styles.centerPageColumn} ${ stylesNew.paperNew }` }>
-            <Typography variant="h6" >
-                Crear Clase
-            </Typography>
+        <Slide direction={ direction } mountOnEnter in={checked && step===0} timeout={500} unmountOnExit>
+          <Paper className={ `${styles.centerPageColumn} ${ stylesNew.paperNew }` }
+            sx={{
+              minWidth:{  md:"600px", sm:"500px", xs:"" },
+            }}
+          >
             <Input
               width="100%"
               label="Titulo"
@@ -117,6 +151,7 @@ const Page = () => {
               value={ title }
               setValue={ setTitle }
               error={ errorTitle }
+              placeholder="Titulo"
               setError={ setErrorTitle }/>
             <Input
               label="Descripción"
@@ -125,55 +160,63 @@ const Page = () => {
               setValue={ setDescription }
               error={ errorDescription }
               setError={ setErrorDescription }
-              minRows={5}
-              maxRows={5}
+              minRows={3}
+              maxRows={3}
               multiline
             />
-            <Box className={ stylesNew.dateContent }>
-              <Input
-                label="Fecha de Inicio"
-                Icon={ DateRangeIcon }
-                value={ startDate }
-                setValue={ setStartDate }
-                error={ errorStartDate }
-                setError={ setErrorStartDate }
-                type="date"
-              />
-              <Input
-                label="Fecha de Fin"
-                Icon={ DateRangeIcon }
-                value={ endDate }
-                setValue={ setEndDate }
-                error={ errorEndDate }
-                setError={ setErrorEndDate }
-                type="date"
-              />
-            </Box>
-            <Box width="100%" justifyContent="end" display="flex" mt={ 3 }>
+            <Input
+              label="Fecha de Inicio"
+              Icon={ DateRangeIcon }
+              value={ startDate }
+              setValue={ setStartDate }
+              error={ errorStartDate }
+              setError={ setErrorStartDate }
+              type="date"
+            />
+            <Input
+              label="Fecha de Fin"
+              Icon={ DateRangeIcon }
+              value={ endDate }
+              setValue={ setEndDate }
+              error={ errorEndDate }
+              setError={ setErrorEndDate }
+              type="date"
+            />
+            <Box width="100%" justifyContent="space-between" display="flex" mt={ 3 }>
+              <ButtonCustom onClick={ () => router.back() }>
+                <ArrowLeft />
+                Atrás
+              </ButtonCustom>
               <ButtonCustom type="primary" onClick={ handleStep1 }>
-                Siguiente
+                Siguiente <ArrowRight />
               </ButtonCustom>
             </Box>
           </Paper>
         </Slide>
-        <Slide direction="left" mountOnEnter in={step === 1} timeout={100} unmountOnExit>
-          <Paper className={ `${styles.centerPageColumn} ${ stylesNew.paperNew }` }>
+        <Slide direction={ direction }  in={checked && step === 1} timeout={500} unmountOnExit>
+          <Paper className={ `${styles.centerPageColumn} ${ stylesNew.paperNew }` }
+            sx={{
+              minWidth:{  md:"600px", sm:"500px", xs:"" },
+            }}>
             <Typography variant="h6">
               Configuracion de Tópicos
             </Typography>
             Acá configuramos los topicos que se verán
             <Box width="100%" justifyContent="space-between" display="flex" mt={ 3 }>
-              <ButtonCustom onClick={ () => setStep(0) }>
-                Volver
+              <ButtonCustom onClick={ () => handleStepChange(0) }>
+                <ArrowLeft />Volver
               </ButtonCustom>
               <ButtonCustom type="primary" onClick={ handleStep2 }>
-                Crear Grupo
+                <Create />Crear Grupo
               </ButtonCustom>
             </Box>
           </Paper>
         </Slide>
-        <Slide direction="left" mountOnEnter in={step === 2} timeout={100} unmountOnExit>
-          <Paper className={ `${styles.centerPageColumn} ${ stylesNew.paperNew }` }>
+        <Slide direction={ direction }  in={checked && step === 2} timeout={500} unmountOnExit>
+          <Paper className={ `${styles.centerPageColumn} ${ stylesNew.paperNew }` }
+            sx={{
+              minWidth:{  md:"600px", sm:"500px", xs:"" },
+            }}>
             <Box
               display="flex"
               alignItems="center"

@@ -33,7 +33,7 @@ const Page = () => {
     const { message, success, ...more } = await loginGoogle(token);
     if (success){
       const { data:{ token, user } } = more;
-      enqueueSnackbar(`Bienvenido "${user.username}"`,{ variant:"success" });
+      enqueueSnackbar(`Bienvenido "${user.name}"`,{ variant:"success" });
       setSession(token, user);
       router.push("/user");
     } else {
@@ -43,23 +43,23 @@ const Page = () => {
 
   const handleLoginPayload = async() => {
     setIsLoading(true);
-    const user = emailText.trim();
+    const email = emailText.trim();
     const password = passText.trim();
     let isValidFields = true;
     handleResetMessageError();
-    if (user.length === 0){
-      setEmailError("Debe ingresar el nombre de usuario o email");
+    if (email.length === 0){
+      setEmailError("Debe ingresar el email");
       isValidFields = false;
     }
     if (password.length === 0){
-      setPassError("debe ingresar la contraseña");
+      setPassError("Debe ingresar la contraseña");
       isValidFields = false;
     }
     if (isValidFields){
-      const { message, success, ...more } = await login(user, password);
+      const { message, success, ...more } = await login(email, password);
       if (success){
         const { data:{ token, user } } = more;
-        enqueueSnackbar(`Bienvenido "${user.username}"`,{ variant:"success" });
+        enqueueSnackbar(`Bienvenido "${user.name}"`,{ variant:"success" });
         setSession(token, user);
         router.push("/user");
       } else {
@@ -125,7 +125,7 @@ const Page = () => {
         <Input
           error={ passError }
           setError={ setPassError }
-          label="Contrasenia"
+          label="Contraseña"
           Icon={KeyIcon}
           value={passText}
           setValue={setPassText}

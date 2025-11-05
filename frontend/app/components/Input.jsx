@@ -13,7 +13,6 @@ const Input = ({ label="", Icon, value, setValue, type = "text", error, showHelp
         ...sx,
         display:"flex",
         flexDirection:"column",
-        gap:0.5,
         width:"100%",
       }}
     >
@@ -40,6 +39,9 @@ const Input = ({ label="", Icon, value, setValue, type = "text", error, showHelp
         onChange={ (e) => handleChange(e) }
         { ...props }
         sx={{
+          "&.MuiFormControl-root":{
+            marginTop:"5px !important",
+          },
           "& .MuiInputBase-root":{
             color:"secondary.contrastText",
             bgcolor:"secondary.main",

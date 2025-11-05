@@ -37,7 +37,7 @@ class groupRpository{
   }
 
   async getTeacherGroups(idUser){
-    const groups = this._prisma.group.findMany({
+    const groups = await this._prisma.group.findMany({
       where:{ idTutor:idUser },
     });
     return groups;
@@ -59,7 +59,38 @@ class groupRpository{
     });
     return data;
   }
+  async dropGroup(groupId){
+    try {
+      const data = await this._prisma.group.update({
+        where:{ id: groupId },
+        data:{ dropped:true, droppedDate: new Date() },
+      }) ?? null;
+      return data;
+    } catch {
+      return null;
+    }
+  }
 
+  async restoreGroup(groupId){
+    const data = await this._prisma.group.update({
+      where:{ id: groupId },
+      data:{
+        dropped:false,
+      },
+    });
+    return data;
+  }
+
+  async deleteGroup(id){
+    try {
+      await this._prisma.group.delete({
+        where:{ id },
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  }
 }
 
 module.exports = groupRpository;

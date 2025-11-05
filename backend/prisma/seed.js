@@ -25,22 +25,28 @@ async function main() {
   await prisma.user.createMany({
     data: [
       {
-        username: "admin_user",
+        name: "admin",
+        lastName: "user",
         email: "admin@example.com",
         password: passwordHash,
         roleId: adminRol.id,
+        isVerified:true,
       },
       {
-        username: "teacher_user",
+        name: "teacher",
+        lastName: "user",
         email: "teacher@example.com",
         password: passwordHash,
         roleId: teacherRol.id,
+        isVerified:true,
       },
       {
-        username: "student_user",
+        name: "student",
+        lastName: "user",
         email: "student@example.com",
         password: passwordHash,
         roleId: studentRol.id,
+        isVerified:true,
       },
     ],
     skipDuplicates: true,
@@ -50,6 +56,7 @@ async function main() {
 
 main()
   .catch((e) => {
+    // eslint-disable-next-line no-console
     console.error("error al crear seeds : ", e);
   })
   .finally(async() => {

@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const app = express();
@@ -5,7 +6,8 @@ const VIEW_DIRECTION = "http://localhost:3000";
 
 const cookieParser = require("cookie-parser");
 const MAX_TIME = 1000;
-
+const nodemailer = require("nodemailer");
+app.use(cookieParser());
 app.use(cors({
   origin: VIEW_DIRECTION,
   credentials: true,
@@ -17,30 +19,41 @@ const UserRepository = require("../repository/userRepository");
 const bcrypt = require("bcrypt");
 const routerUser = require("./Routers/user");
 const routerGroup = require("./Routers/groups");
+const routerAdmin = require("./Routers/admin");
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
 const repository = new UserRepository();
-app.use(cookieParser());
+
 app.use(express.json());
 app.use("", routerUser);
 app.use("", routerGroup);
+app.use("", routerAdmin);
 
 app.post("/login", async(req, res) => {
   try {
-    const username = req.body.username;
+    const email = req.body.email;
     const pass = req.body.password;
-    if (!username || !pass) {
-      return res.status(400).json({ message: "Nombre de Usuario y contrasenia son requeridos" });
+    if (!email || !pass) {
+      return res.status(400).json({ message: "Email y contraseña son requeridos" });
     }
     const acc = new AuthenticacionService(repository);
-    const { token, user } = await acc.login(username, pass);
+    const { token, user } = await acc.login(email, pass);
     if (!token) {
       return res.status(401).json({ message: "Nombre de usuario o contrasenia incorrectas" });
     }
 
     res.cookie("authToken", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-      maxAge: 60 * 60 * MAX_TIME,
+      secure: true,
+      sameSite: "none",
+      maxAge: 60 * 60 * MAX_TIME * 24 * 30,
     });
 
     return res.status(200).json({ token, user });
@@ -63,20 +76,20 @@ app.post("/logingoogle", async(req, res) => {
     }
     const acc = new AuthenticacionService(repository);
     const { token, user } = await acc.loginGoogleS(tokenUser);
-    if (!token) {
-      return res.status(401).json({ message: "Nombre de usuario o contrasenia incorrectas" });
+    if (!token || !user) {
+      return res.status(401).json({ message: "Token de Google inválido o error en la autenticación." });
     }
 
     res.cookie("authToken", token, {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
-      maxAge: 60 * 60 * MAX_TIME,
+      maxAge: 60 * 60 * MAX_TIME * 24 * 30,
     });
 
     return res.status(200).json({ token, user });
   } catch (e) {
-    return res.status(500).json({ message: `Internal server error ${e}` });
+    return res.status(500).json({ message: `Error interno del servidor: ${e.message}` });
   }
 });
 
@@ -93,14 +106,11 @@ app.get("/check-email", async(req, res) => {
   }
 });
 
-app.get("/check-username", async(req, res) => {
+app.get("/check-verification-status", async(req, res) => {
   try {
-    const username = req.query.username;
-    if (!username) {return res.status(400).json({ message: "Nombre de usuario requerido" });}
-
-    const user = await repository.findByUsername(username);
-    if (user) {return res.status(409).json({ message: "El nombre de usuario ya existe" });}
-    return res.status(200).json({ message: "Nombre de usuario disponible" });
+    const { email } = req.query;
+    const user = await repository.findByEmail(email);
+    return res.status(200).json({ isVerified: user?.isVerified || false });
   } catch (e) {
     return res.status(500).json({ message: `Error interno del servidor: ${e.message}` });
   }
@@ -108,36 +118,80 @@ app.get("/check-username", async(req, res) => {
 
 app.post("/register", async(req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { email } = req.body;
 
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: "Todos los campos son requeridos" });
-    }
-    const existingUser = await repository.findByUsernameOrEmail(username, email);
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Verifica tu cuenta de PyCraft",
+      html: `
+        <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px; color: #333; background-color: #f4f4f4;">
+          <h2 style="color: #4CAF50;">¡Bienvenido a PyCraft!</h2>
+          <p>Gracias por registrarte. Usa el siguiente código para verificar tu cuenta.</p>
+          <div style="background-color: #ffffff; border: 1px dashed #ccc; padding: 20px; margin: 20px auto; max-width: 200px;">
+            <p style="font-size: 24px; font-weight: bold; letter-spacing: 5px; margin: 0;">${verificationCode}</p>
+          </div>
+          <p style="margin-top: 20px; font-size: 12px; color: #777;">Si no te registraste en PyCraft, puedes ignorar este correo.</p>
+        </div>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return res.status(200).json({
+      message: "Código de verificación enviado.",
+      verificationCode: verificationCode,
+    });
+
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error("ERROR EN /register:", e);
+    return res.status(500).json({ message: `Error interno del servidor: ${e.message}` });
+  }
+});
+
+app.post("/verify-email", async(req, res) => {
+
+  try {
+    const existingUser = await repository.findByEmail(req.body.email);
     if (existingUser) {
       return res.status(409).json({ message: "El usuario o email ya existe" });
     }
 
+    const { name, lastName, email, password, code, originalCode } = req.body;
+
+    if (!name || !lastName || !email || !password || !code || !originalCode) {
+      return res.status(400).json({ message: "Todos los campos son requeridos para la verificación." });
+    }
+
+    if (code !== originalCode) {
+      return res.status(400).json({ message: "Código de verificación inválido." });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await repository.createUser(username, email, hashedPassword);
+    await repository.createUser({
+      name,
+      lastName,
+      email,
+      password: hashedPassword,
+      isVerified: true,
+    });
 
     const acc = new AuthenticacionService(repository);
-    const { token, user } = await acc.login(username, password);
-
-    if (!token) {
-      return res.status(500).json({ message: "No se pudo iniciar sesión después del registro" });
-    }
+    const { token, user } = await acc.login(email, password, true);
 
     res.cookie("authToken", token, {
       httpOnly: true,
-      maxAge: 3600000,
-      sameSite: "lax",
       secure: false,
+      sameSite: "lax",
+      maxAge: 60 * 60 * MAX_TIME,
     });
-    return res.status(201).json({ token, user, message: "Usuario creado e iniciado sesión exitosamente" });
+
+    return res.status(200).json({ message: "Email verificado exitosamente.", token, user });
   } catch (e) {
-    console.error("❌ ERROR EN /register:", e);
     return res.status(500).json({ message: `Error interno del servidor: ${e.message}` });
   }
 });

@@ -2,13 +2,14 @@ const express = require("express");
 
 const userRepository = require("../../repository/userRepository");
 const groupRpository = require("../../repository/groupRepository");
-const verifiToken = require("../../repository/groupRepository");
 const GroupService = require("../../services/groupService");
-
+const { toBeAdminOrTeacher, toBeAdminOrOwner } = require("../middlewares/AuthorizationMiddleware");
 const repository = new userRepository();
 const groupRepository = new groupRpository();
+const AuthorizationService = require("../../services/authorizationService");
 
 const groupService = new GroupService(groupRepository, repository);
+const autorizationService = new AuthorizationService(new userRepository);
 const router = express.Router();
 
 const payloadStruct = {
@@ -19,7 +20,7 @@ const payloadStruct = {
   endDate:null,
 };
 /* Solo para usuario adminsitrador supongo */
-router.post("/api/groups/create", async(req,res)=>{
+router.post("/api/groups/create", toBeAdminOrTeacher , async(req,res)=>{
   try {
     const data = { ...payloadStruct, ...req.body };
     const isNull = Object.values(data).some(value => value===null );
@@ -37,6 +38,16 @@ router.post("/api/groups/create", async(req,res)=>{
   }
 });
 
+router.put("/api/group/update", toBeAdminOrOwner, async(req, res) => {
+  try {
+    const { id, running, stillValid, idTutor, ...payload } = req.body;
+    const newGroup = await groupService.updateGroup(id, payload);
+    return res.status(200).send( newGroup );
+  } catch (e){
+    return res.status(500).send({ success:false, message:`Error interno del servidor: ${e}` });
+  }
+});
+
 router.get("/api/groups/all", async(req, res) => {
   try {
     const allgroups = await groupService.getAllGroups();
@@ -46,21 +57,74 @@ router.get("/api/groups/all", async(req, res) => {
   }
 });
 
-router.get("/api/groups/student", async(res, req) => {
+router.get("/api/groups/student", async(req, res) => {
   try {
     const groups = await groupService.getStudentGroup(3);
-    return req.status(200).send(groups);
+    return res.status(200).send(groups);
   } catch (_){
-    return req.status(500).send({ success:false, message:"error interno del servidor" });
+    return res.status(500).send({ success:false, message:"error interno del servidor" });
   }
 });
 
-router.get("/api/groups/teacher", async(res, req) => {
+router.get("/api/groups/teacher", async(req, res) => {
   try {
-    const groups = await groupService.getTeacherGroups(2);
-    return req.status(200).send(groups);
+    const token = req.cookies.authToken ?? null;
+    await autorizationService.setToken(token);
+    const id = autorizationService.user.id;
+    const groups = await groupService.getTeacherGroups(id);
+    return res.status(200).send(groups);
+  } catch (e){
+    return res.status(500).send({ success:false, message:`error interno del servidor : ${ e } ` });
+  }
+});
+
+router.get("/api/group/drop/:id", toBeAdminOrOwner, async(req, res) => {
+  const id = parseInt(req.params.id);
+  try {
+    const group = await groupService.dropGroup(id);
+    return res.status(200).send( group );
   } catch (_){
-    return req.status(500).send({ success:false, message:"error interno del servidor" });
+    return res.status(500).send({ message:"error interno del servidor", success:false });
+  }
+});
+
+router.get("/api/group/restore/:id", toBeAdminOrOwner, async(req, res)=>{
+  const id = parseInt(req.params.id);
+  try {
+    const response = await groupService.restoreGroup(id);
+    return res.status(200).send( response );
+  } catch (e){
+    return res.status(500).send({ message:`Error interno del servidor : ${ e }`, success:false });
+  }
+});
+
+router.get("/api/group/:id", async(req, res) => {
+  const id = parseInt(req.params.id);
+  try {
+    const response = await groupService.getGroup(id);
+    return res.status(200).send(response);
+  } catch {
+    return res.status(500).send({ message:"error interno del servdor", success:false });
+  }
+});
+
+router.post("/api/group/delete",toBeAdminOrOwner, async(req, res) => {
+  const payloadStructure = {
+    id:null,
+    userId: null,
+    password: null,
+  };
+  const payload = { ...payloadStructure, ...req.body };
+  const haveNull = Object.values(payload).some((obj) => obj === null);
+  if (haveNull){
+    return res.status(400).send({ message:"error de usuario, los datos no deben ser nulos", success:false });
+  }
+  const { id, userId, password } = payload;
+  try {
+    const response = await groupService.deleteGroup(id, userId, password);
+    return res.status(200).send(response);
+  } catch (e) {
+    return res.status(500).send({ message:`Error interno del servidor : ${e}`, success:false });
   }
 });
 

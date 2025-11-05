@@ -10,7 +10,7 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals"),
+  // Ignorar archivos generados y dependencias para evitar falsos positivos
   {
     files: ["**/*.{js,jsx}"],
     ignores: [
@@ -19,26 +19,36 @@ const eslintConfig = [
       "out/**",
       "build/**",
       "next-env.d.ts",
-    ],rules: {
-      "quotes": ["error", "double"],
-      "semi": ["error", "always"],
-      "indent": ["error", 2],
+    ],
+  },
+  // Configuración base de Next.js
+  ...compat.extends("next/core-web-vitals"),
+  // Reglas del proyecto para archivos JS/JSX
+  {
+    files: ["**/*.{js,jsx}"],
+    rules: {
+      quotes: ["error", "double"],
+      semi: ["error", "always"],
+      indent: ["error", 2],
       "comma-dangle": ["error", "always-multiline"],
       "object-curly-spacing": ["error", "always"],
       "array-bracket-spacing": ["error", "never"],
       "space-before-function-paren": ["error", "never"],
-      "keyword-spacing": ["error", { "before": true, "after": true }],
-      "no-multiple-empty-lines": ["error", { "max": 1 }],
+      "keyword-spacing": ["error", { before: true, after: true }],
+      "no-multiple-empty-lines": ["error", { max: 1 }],
       "eol-last": ["error", "always"],
       "no-trailing-spaces": "error",
-      "eqeqeq": ["error", "always"],
+      eqeqeq: ["error", "always"],
       "no-var": "error",
       "prefer-const": "error",
-      "curly": ["error", "all"],
-      "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+      curly: ["error", "all"],
+      // Ignora parámetros y variables NO usadas que comienzan con _ (incluye la variable "_" a secas)
+      "no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      ],
       "no-console": "warn",
     },
-    files: ["**/*.{js,jsx}"],
   },
 ];
 

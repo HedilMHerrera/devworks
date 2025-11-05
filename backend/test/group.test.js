@@ -1,5 +1,5 @@
 const GroupService = require("../services/groupService");
-const groups = [
+let groups = [
   { id:1,
     name:"clase 1",
     idTutor:1,
@@ -36,6 +36,8 @@ const users =  [
     name:"tutor",
     roleId:2,
     role:role[2],
+    password: "123456",
+    email:"eusebio",
   },{
     id:2,
     name:"student",
@@ -66,6 +68,13 @@ const registers = [
 const mockUserRepository = {
   getUser: jest.fn().mockImplementation((id) => users.find((i) => i.id === id)),
   getRole: jest.fn().mockImplementation((id) => role.find((i) => i.id === id) ),
+  login: jest.fn().mockImplementation((email, password) => {
+    const user = users.find((i) => i.email === email) ?? null;
+    if (user.password+"" === password+""){
+      return user;
+    }
+    return  false;
+  }),
 };
 
 const mockRepositoryPrisma = {
@@ -75,8 +84,23 @@ const mockRepositoryPrisma = {
     const group = groups.find((i) => i.id === id) ?? null;
     return (group) ? { ...group, ...data }:group;
   }),
-  deleteGroup: jest.fn().mockImplementation( data => groups.find((i) => i.id === data)),
-  getGroup: jest.fn().mockImplementation((data) => groups.find((i) => i.id === data)),
+  dropGroup: jest.fn().mockImplementation( data => {
+    const group = groups.find((i) =>i.id === data) ?? null;
+    group.dropped = true;
+    return group;
+  }),
+  restoreGroup: jest.fn().mockImplementation( data => {
+    const group = groups.find((i) =>i.id === data) ?? null;
+    group.dropped = false;
+    return group;
+  }),
+  deleteGroup: jest.fn().mockImplementation( data => {
+    const group = groups.find((i) => i.id === data);
+    const newGroups = groups.filter((item) => item.id !== group.id );
+    groups = newGroups;
+    return true;
+  }),
+  getGroup: jest.fn().mockImplementation((data) => groups.find((i) => i.id === data) ?? null),
   getTeacherGroups: jest.fn().mockImplementation((id) => groups.filter((i) => i.idTutor ===id )),
   getStudentRegister: jest.fn().mockImplementation((id) => registers.filter((i) => i.userId === id)),
   getGroupCode: jest.fn().mockReturnValue(null),
@@ -260,5 +284,46 @@ describe("Operations on the groups", () => {
     const group = await groupService.addGroup(payload);
     expect(group.code).not.toBeUndefined();
     expect(group.code).not.toBeNull();
+  });
+
+  test("drop class from repository, just change the state to true expected", async() => {
+    const groupService = new GroupService(mockRepositoryPrisma, mockUserRepository);
+    const groupId = 1;
+    const response =  await groupService.dropGroup(groupId);
+    expect(response.group.dropped).toBe(true);
+  });
+
+  test("restore group", async() => {
+    const groupService = new GroupService(mockRepositoryPrisma, mockUserRepository);
+    const groupId = 1;
+    const response = await groupService.restoreGroup(groupId);
+    expect(response.group.dropped).toBe(false);
+  });
+
+  test("delete group", async() => {
+    const payload = {
+      id: 1,
+      idUser:1,
+      password:"12345",
+    };
+    const groupService = new GroupService(mockRepositoryPrisma, mockUserRepository);
+    const response = await groupService.deleteGroup(payload.id, payload.idUser, payload.password);
+    const group = await groupService.getGroup(payload.id);
+    expect(response.success).toBe(false);
+    expect(group.success).toBe(true);
+    expect(group).not.toBeNull();
+  });
+
+  test("delete group, true expected", async() => {
+    const payload = {
+      id: 1,
+      idUser:1,
+      password:"123456",
+    };
+    const groupService = new GroupService(mockRepositoryPrisma, mockUserRepository);
+    const response = await groupService.deleteGroup(payload.id, payload.idUser, payload.password);
+    const group = await groupService.getGroup(payload.id);
+    expect(response.success).toBe(true);
+    expect(group.success).toBe(false);
   });
 });

@@ -5,29 +5,25 @@ class UserRespository{
   constructor(){
     this._prisma = new PrismaClient();
   }
-  async login(username, password){
-    const pass = await bcrypt.hash(password, 10);
+  async login(email, password, isVerifiedLogin = false){
     const user = await this._prisma.user.findFirst({
       where: {
-        OR:[
-          {
-            username: username,
-          },{
-            email: username,
-          },
-        ],
+        email: email,
       },
       include:{
         role: true,
       },
     });
-    // Si no se encuentra el usuario O si el usuario no tiene una contraseña (es una cuenta de Google)
-    if (!user || !user.password){
+
+    if (!user){
       return false;
     }
 
-    // Compara la contraseña proporcionada con la almacenada en la base de datos.
-    if (!await bcrypt.compare(password, user.password)){
+    if (!user.isVerified && !isVerifiedLogin) {
+      return false;
+    }
+
+    if (!isVerifiedLogin && user.password && !(await bcrypt.compare(password, user.password))) {
       return false;
     }
     const roleName = user.role.name;
@@ -61,16 +57,8 @@ class UserRespository{
   async findUserById(id) {
     return await this._prisma.user.findUnique({
       where: { id: id },
-    });
-  }
-
-  async findByUsernameOrEmail(username, email) {
-    return await this._prisma.user.findFirst({
-      where: {
-        OR: [
-          { username: username },
-          { email: email },
-        ],
+      select: {
+        id: true, name: true, lastName: true, email: true, role: true,
       },
     });
   }
@@ -78,16 +66,22 @@ class UserRespository{
   async findByEmail(email) {
     return await this._prisma.user.findFirst({
       where: { email: email },
+      include: {
+        role: true,
+      },
     });
   }
 
-  async findByUsername(username) {
-    return await this._prisma.user.findFirst({
-      where: { username: username },
-    });
-  }
-
-  async createUser(username, email, password) {
+  async createUser(userData) {
+    const {
+      name,
+      lastName,
+      email,
+      password,
+      googleId,
+      isVerified = false,
+      verificationCode = null,
+      verificationCodeExpires = null } = userData;
     const studentRole = await this._prisma.role.findUnique({
       where: { name: "student" },
     });
@@ -98,10 +92,37 @@ class UserRespository{
 
     return await this._prisma.user.create({
       data: {
-        username,
+        name,
+        lastName,
         email,
         password,
+        googleId,
         roleId: studentRole.id,
+        isVerified: isVerified,
+        verificationToken: verificationCode,
+        verificationExpires: verificationCodeExpires,
+      },
+      include: {
+        role: true,
+      },
+    });
+  }
+
+  async verifyUser(email, code) {
+    const user = await this._prisma.user.findFirst({
+      where: { email: email, verificationToken: code },
+    });
+
+    if (!user || user.verificationExpires < new Date()) {
+      return null;
+    }
+
+    return await this._prisma.user.update({
+      where: { id: user.id },
+      data: {
+        isVerified: true,
+        verificationToken: null,
+        verificationExpires: null,
       },
     });
   }

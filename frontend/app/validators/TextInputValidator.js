@@ -68,3 +68,26 @@ export class StartDateIsBeforeEndDate{
     return isValid;
   }
 };
+
+export class DateIsNotBeforeOf{
+  constructor(date){
+    this.date = new Date(date);
+    this.message = "La fecha ingresada no puede ser inferior a la fecha Inicio";
+  }
+  validate(date){
+    const isValid = new Date(date)>this.date;
+    return isValid;
+  }
+};
+
+export class DateIsNotAfterOf{
+  constructor(date){
+    this.date = new Date(date);
+    this.message = "La fecha ingresada no puede ser despues de la fecha fin";
+  }
+  validate(date){
+    const isValid = new Date(date)<this.date;
+    return isValid;
+  }
+};
+

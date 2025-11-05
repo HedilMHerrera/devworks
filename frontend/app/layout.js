@@ -11,7 +11,7 @@ import { MenuCustom } from "./components/Menu";
 import Charging from "./components/Charging";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
-const userId = "221401385773-3r3ha0nb21ukkef1bi1dgn40ci6srgtc.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 export default function RootLayout({ children }) {
   return (
     <html lang="es">
@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
             margin:0,
           }}
         >
-          <GoogleOAuthProvider clientId={ userId }>
+          <GoogleOAuthProvider clientId={ GOOGLE_CLIENT_ID }>
             <Charging>
               <Notify>
                 <Box

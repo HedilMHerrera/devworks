@@ -15,14 +15,20 @@ datasource db {
 
 model User {
   id        Int      @id @default(autoincrement())
-  username  String   @unique
+  name      String
+  lastName  String
   email     String   @unique
-  password  String
+  password  String?
+  googleId  String?  @unique
   roleId    Int
   role      Role     @relation(fields:[roleId], references: [id])
   registers  Register[]
   createdAt DateTime @default(now())
   groups   Group[]
+  updatedAt           DateTime  @updatedAt @default(now())
+  isVerified        Boolean  @default(false)
+  verificationToken String?  @unique
+  verificationExpires DateTime?
 }
 
 model Role {
@@ -42,6 +48,8 @@ model Group {
   endDate   DateTime
   code      String  @unique
   tutor     User    @relation(fields: [idTutor], references: [id])
+  dropped    Boolean @default(false)
+  droppedDate DateTime @default(now())
 }
 
 model Register{
@@ -51,5 +59,4 @@ model Register{
   groupId   Int
   user      User     @relation(fields: [userId], references: [id])
   group     Group    @relation(fields: [groupId], references: [id])
-
 }

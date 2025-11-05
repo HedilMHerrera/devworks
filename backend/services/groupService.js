@@ -91,6 +91,31 @@ class GroupService{
     const success = !!group;
     return { success , message:"Grupo actualizado con exito", group };
   }
+
+  async dropGroup(id){
+    const group = await this._repository.dropGroup(id);
+    const message = (!group) ? "Grupo no existe":"Grupo Eliminado con exito";
+    return { message, success: !!group, group };
+  }
+
+  async restoreGroup(id){
+    const group = await this._repository.restoreGroup(id);
+    const message = (!group) ? "Grupo no existe":"Grupo Restaurado con exito";
+    return { message, success: !!group, group };
+  }
+
+  async deleteGroup(id, userId, password){
+    const user = await this._userRepository.getUser(userId);
+    if (!user){
+      return { message:"El usuario no Existe", success:false };
+    }
+    const isGoodPassword = await this._userRepository.login(user.email, password);
+    if (isGoodPassword) {
+      await this._repository.deleteGroup(id);
+      return { success:true, message:"Grupo Eliminado con Exito!" };
+    }
+    return { message:"Contraseña Incorrecta", success:false };
+  }
 }
 
 module.exports = GroupService;

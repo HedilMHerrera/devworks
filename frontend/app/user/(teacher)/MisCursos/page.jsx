@@ -97,7 +97,7 @@ const Page = () => {
         <AccordionDetails sx={{ bgcolor: "background.main" }}>
           <Box
             component={Link}
-            href="#"
+            href="/user/MisCursos/topic/1"
             sx={{
               display: "inline-block",
               color: "background.contrastText",

@@ -10,7 +10,6 @@ import { URL_API_ROOT } from "@/app/redirections";
 import axios from "axios";
 import { ArrowBackSharp } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check";
 import styles from "@/app/global.module.css";

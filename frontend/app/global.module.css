@@ -8,6 +8,11 @@
     align-self: center;
 }
 
+.centerPageRow{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 .skeleton {
   background: linear-gradient(

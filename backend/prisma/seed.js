@@ -30,6 +30,7 @@ async function main() {
         email: "admin@example.com",
         password: passwordHash,
         roleId: adminRol.id,
+        isVerified:true,
       },
       {
         name: "teacher",
@@ -37,6 +38,7 @@ async function main() {
         email: "teacher@example.com",
         password: passwordHash,
         roleId: teacherRol.id,
+        isVerified:true,
       },
       {
         name: "student",
@@ -44,6 +46,7 @@ async function main() {
         email: "student@example.com",
         password: passwordHash,
         roleId: studentRol.id,
+        isVerified:true,
       },
     ],
     skipDuplicates: true,

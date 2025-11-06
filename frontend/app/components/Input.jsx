@@ -1,7 +1,7 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Box, IconButton, TextField } from "@mui/material";
 import React, { useState } from "react";
-const Input = ({ label="", Icon, value, setValue, type, error, setError, sx }) => {
+const Input = ({ label="", Icon, value, setValue, type = "text", error, showHelperText=true, setError, sx, ...props }) => {
   const [showPass, setShowPass] = useState(false);
   const handleChange = (e) => {
     setError("");
@@ -13,7 +13,7 @@ const Input = ({ label="", Icon, value, setValue, type, error, setError, sx }) =
         ...sx,
         display:"flex",
         flexDirection:"column",
-        gap:0.5,
+        width:"100%",
       }}
     >
       <Box
@@ -33,10 +33,15 @@ const Input = ({ label="", Icon, value, setValue, type, error, setError, sx }) =
       </Box>
       <TextField
         fullWidth
+        helperText={ showHelperText }
         value={ value }
-        type={ type === "pass" && !showPass ?  "password":"text"}
+        type={ type === "pass" && !showPass ?  "password":type}
         onChange={ (e) => handleChange(e) }
+        { ...props }
         sx={{
+          "&.MuiFormControl-root":{
+            marginTop:"5px !important",
+          },
           "& .MuiInputBase-root":{
             color:"secondary.contrastText",
             bgcolor:"secondary.main",

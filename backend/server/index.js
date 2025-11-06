@@ -7,7 +7,7 @@ const VIEW_DIRECTION = "http://localhost:3000";
 const cookieParser = require("cookie-parser");
 const MAX_TIME = 1000;
 const nodemailer = require("nodemailer");
-
+app.use(cookieParser());
 app.use(cors({
   origin: VIEW_DIRECTION,
   credentials: true,
@@ -18,6 +18,7 @@ const AuthenticacionService = require("../services/authenticationService");
 const UserRepository = require("../repository/userRepository");
 const bcrypt = require("bcrypt");
 const routerUser = require("./Routers/user");
+const routerGroup = require("./Routers/groups");
 const routerAdmin = require("./Routers/admin");
 
 const transporter = nodemailer.createTransport({
@@ -29,9 +30,10 @@ const transporter = nodemailer.createTransport({
 });
 
 const repository = new UserRepository();
-app.use(cookieParser());
+
 app.use(express.json());
 app.use("", routerUser);
+app.use("", routerGroup);
 app.use("", routerAdmin);
 
 app.post("/login", async(req, res) => {
@@ -49,9 +51,9 @@ app.post("/login", async(req, res) => {
 
     res.cookie("authToken", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-      maxAge: 60 * 60 * MAX_TIME,
+      secure: true,
+      sameSite: "none",
+      maxAge: 60 * 60 * MAX_TIME * 24 * 30,
     });
 
     return res.status(200).json({ token, user });
@@ -82,7 +84,7 @@ app.post("/logingoogle", async(req, res) => {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
-      maxAge: 60 * 60 * MAX_TIME,
+      maxAge: 60 * 60 * MAX_TIME * 24 * 30,
     });
 
     return res.status(200).json({ token, user });

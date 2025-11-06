@@ -41,7 +41,7 @@ class AuthenticacionService {
         });
       }
 
-      const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
+      const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "30d" });
 
       const roleName = user.role.name;
       const { password: _, role: __, roleId: ___, ...safeUser } = user;

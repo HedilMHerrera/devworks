@@ -12,6 +12,7 @@ const compat = new FlatCompat({
 const eslintConfig = [
   // Ignorar archivos generados y dependencias para evitar falsos positivos
   {
+    files: ["**/*.{js,jsx}"],
     ignores: [
       "node_modules/**",
       ".next/**",

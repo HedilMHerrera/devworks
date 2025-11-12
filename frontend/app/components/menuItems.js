@@ -93,5 +93,11 @@ export const menuItems = {
       route: "/user/ReportesGrupos",
       description: "Genera y consulta reportes detallados sobre los grupos y su desempeño.",
     },
+    {
+      name: "Crear Topicos",
+      Icon: AssessmentIcon,
+      route: "/user/cursos",
+      description: "crea gestiona los topicos.",
+    },
   ],
 };

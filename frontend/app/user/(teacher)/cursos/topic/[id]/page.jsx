@@ -1,7 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import ContentHTML from "../../components/ContentHTML";
 import dynamic from "next/dynamic";
+import { useParams, useRouter } from "next/navigation";
+
+import { useSnackbar } from "notistack";
+import axios from "axios";
 import {
   Box,
   Button,
@@ -17,7 +22,7 @@ const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
 const mockTopic = {
   title: "Introducción a Python",
-  contentHtml: `
+  statement: `
     <h2>¿Qué es Python?</h2>
     <p>Python es un lenguaje de programación interpretado, fácil de aprender y con una sintaxis clara.</p>
     <p>Por ejemplo:</p>
@@ -27,20 +32,40 @@ const mockTopic = {
 };
 
 export default function TopicEditPage() {
-  const id = 1;
+  const params = useParams();
+  const id = parseInt(params.id);
+  const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
   const [topic, setTopic] = useState(mockTopic);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    console.log("Simulando carga de tópico con ID:", id);
-  }, [id]);
+  const handleSave = async() => {
+    try {
+      setLoading(true);
 
-  const handleSave = () => {
-    setLoading(true);
-    setTimeout(() => {
-      alert("Tópico guardado (modo demo)");
+      const contentData = {
+        idTopic:id,
+        title: topic.title,
+        type: "texto",
+        statement: topic.statement,
+        urlView: "url",
+        urlSource: "url",
+      };
+
+      const res = await axios.post("http://localhost:30001/api/content", contentData);
+
+      if (res.status === 201 || res.data.success) {
+        enqueueSnackbar("contenido guardado exitosamente",{ variant:"success" });
+        router.back();
+      } else {
+        enqueueSnackbar("error al guardar contenido", { variant:"error" });
+      }
+    } catch (error) {
+      enqueueSnackbar("error al guardar contenido", { variant:"error" });
+      console.error(error);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -51,9 +76,8 @@ export default function TopicEditPage() {
             elevation={3}
             sx={{
               p: 3,
-              backgroundColor: "#071014",
+              backgroundColor: "secondary.main",
               borderRadius: 2,
-              border: "1px solid #0f1f1a",
               height: "90vh",
               display: "flex",
               flexDirection: "column",
@@ -82,9 +106,9 @@ export default function TopicEditPage() {
             <Box sx={{ flex: 1, mb: 2 }}>
               <ReactQuill
                 theme="snow"
-                value={topic.contentHtml}
+                value={topic.statement}
                 onChange={(val) =>
-                  setTopic((prev) => ({ ...prev, contentHtml: val }))
+                  setTopic((prev) => ({ ...prev, statement: val }))
                 }
                 style={{ height: "90%", borderRadius: "8px" }}
               />
@@ -106,8 +130,16 @@ export default function TopicEditPage() {
             </Box>
 
             <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end", mt: 2 }}>
-              <Button variant="outlined" sx={{ color: "#80ffbf", borderColor: "#80ffbf" }}>
-                Guardar borrador
+              <Button
+                variant="contained"
+                onClick={() => router.back()}
+                sx={{
+                  backgroundColor: "#9adc2856",
+                  color: "#0a120e",
+                  fontWeight: "bold",
+                }}
+              >
+                cancelar
               </Button>
               <Button
                 variant="contained"
@@ -131,7 +163,7 @@ export default function TopicEditPage() {
             elevation={3}
             sx={{
               p: 4,
-              backgroundColor: "#071014",
+              backgroundColor: "secondary.main",
               borderRadius: 2,
               border: "1px solid #0f1f1a",
               height: "90%",
@@ -141,33 +173,7 @@ export default function TopicEditPage() {
             <Typography variant="h5" sx={{ color: "white", mb: 2 }}>
               Vista Previa
             </Typography>
-
-            <Box
-              sx={{
-                "& h1, & h2, & h3": { color: "#9bdc28", mt: 2 },
-                "& p": {
-                  color: "#d9f7be",
-                  fontSize: "1rem",
-                  lineHeight: 1.7,
-                },
-                "& a": { color: "#80ffbf", textDecoration: "underline" },
-                "& img": { maxWidth: "100%", borderRadius: 2, mt: 2 },
-                "& pre": {
-                  backgroundColor: "#0e1a12",
-                  color: "#9bdc28",
-                  padding: "10px",
-                  borderRadius: "6px",
-                  overflowX: "auto",
-                },
-                backgroundColor: "#081318",
-                p: 3,
-                borderRadius: 1,
-                minHeight: 350,
-              }}
-              dangerouslySetInnerHTML={{
-                __html: `<h2 style="margin-top:0">${topic.title}</h2>${topic.contentHtml}`,
-              }}
-            />
+            <ContentHTML topic={ topic }/>
           </Paper>
         </Grid>
       </Grid>

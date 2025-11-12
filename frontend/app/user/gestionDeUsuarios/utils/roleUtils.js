@@ -4,6 +4,8 @@ export const getRoleDisplay = (roleName) => {
     return "Administrador";
   case "teacher":
     return "Profesor";
+  case "editor":
+    return "Editor";
   case "student":
     return "Estudiante";
   default:
@@ -17,6 +19,8 @@ export const getRoleColor = (roleName) => {
     return "error";
   case "teacher":
     return "info";
+  case "editor":
+    return "warning";
   case "student":
     return "success";
   default:

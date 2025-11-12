@@ -12,9 +12,6 @@ const service = new TopicService(repository, teacherRepository);
 router.get("/", async(req, res) => {
   try {
     const result = await service.getAllTopics();
-    if (!result.success) {
-      return res.status(404).json({ message: result.message });
-    }
     res.status(200).json(result.data);
   } catch (error) {
     console.error("Error al obtener tópicos:", error);

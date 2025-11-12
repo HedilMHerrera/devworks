@@ -18,7 +18,7 @@ const TopicList = () => {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    const fetchTopics = async () => {
+    const fetchTopics = async() => {
       try {
         const res = await axios.get(`${URL_BASE}/api/topic`);
         setTopics(res.data);
@@ -32,24 +32,26 @@ const TopicList = () => {
     fetchTopics();
   }, []);
 
-  const handleCreateTopic = async () => {
+  const handleCreateTopic = async() => {
     if (!newTopic.title || !newTopic.description) {
       alert("Completa el título y la descripción");
       return;
     }
 
     setLoading(true);
+    setSaving(true);
     try {
+      const now = new Date();
       const payload = {
         idTutor: 2,
         title: newTopic.title,
         description: newTopic.description,
         startDate: newTopic.startDate
           ? new Date(newTopic.startDate).toISOString()
-          : new Date().toISOString(),
+          : now.toISOString(),
         endDate: newTopic.endDate
           ? new Date(newTopic.endDate).toISOString()
-          : new Date().toISOString(),
+          : new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString(),
       };
 
       const res = await axios.post("http://localhost:30001/api/topic", payload);
@@ -57,7 +59,6 @@ const TopicList = () => {
       if (res.data && res.data.id) {
         setTopics((prev) => [...prev, res.data]);
       }
-      setSaving(true);
 
       setNewTopic({
         title: "",
@@ -70,6 +71,7 @@ const TopicList = () => {
       alert("Error al crear el tópico");
     } finally {
       setLoading(false);
+      setSaving(false);
     }
   };
 
@@ -87,25 +89,6 @@ const TopicList = () => {
         <Typography variant="h6" sx={{ color: "background.contrastText", mb: 2 }}>
           Programas del curso
         </Typography>
-        <Button
-          sx={{
-            bgcolor: "primary.main",
-            color: "primary.contrastText",
-            display: "flex",
-            gap: 1,
-            textTransform: "lowercase",
-            padding: "5px 30px ",
-            transition: "0.3s",
-            "&:hover": {
-              color: "primary.main",
-              bgcolor: "transparent",
-              border: "1px solid",
-              borderColor: "primary.main",
-            },
-          }}
-        >
-          añadir tópico
-        </Button>
       </Box>
 
       {topics.length === 0 ? (

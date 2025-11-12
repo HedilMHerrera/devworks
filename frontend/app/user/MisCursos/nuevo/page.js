@@ -1,6 +1,6 @@
 "use client";
-import { Box, IconButton, Paper, Tooltip, Typography, Slide } from "@mui/material";
-import React, { useState } from "react";
+import { Box, IconButton, Paper, Tooltip, Typography, Slide, Checkbox } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import styles from "@/app/global.module.css";
 import stylesNew from "./new.module.css";
 import TextFieldsIcon from "@mui/icons-material/TextFields";
@@ -19,9 +19,12 @@ import StepPeakComponent from "./components/StepPeakComponent";
 import HeaderTableTitle from "../components/HeaderTableTitle";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
 import { ArrowLeft, ArrowRight, Create } from "@mui/icons-material";
-
+import AcordionData from "../[id]/components/AcordionData";
+import { URL_API_ROOT } from "@/app/redirections";
+import axios from "axios";
 const Page = () => {
   const user = useSessionZ((state) => state.user);
+  const [topics, setTopics] = useState([]);
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [errorTitle, setErrorTitle] = useState("");
@@ -35,6 +38,37 @@ const Page = () => {
   const [step, setStep] = useState(0);
   const [checked, setChecked] = useState(true);
   const [direction, setDirection] = useState("down");
+
+  useEffect(() => {
+    fetchTopics();
+  },[]);
+
+  const fetchTopics = async() => {
+    const url = `${ URL_API_ROOT }/api/topic`;
+    try {
+      const response = await axios.get(url, { withCredentials:true });
+      const topicsAux = [];
+      for (const topic of response.data){
+        const checked = true;
+        topicsAux.push({ checked, topic });
+      }
+      setTopics(topicsAux);
+    } catch {
+      enqueueSnackbar("Error interno del servidor", { variant:"error" });
+    }
+  };
+
+  const setCheckedF = async(id) => {
+    const topicAux = [...topics];
+    const res = [];
+    for (const { checked ,topic } of topicAux){
+      const isClicked = topic.id === id;
+      const newChecked = isClicked ? !checked: checked;
+      res.push({ checked: newChecked, topic });
+    }
+    setTopics(res);
+  };
+
   const handleCopied = async() => {
     await navigator.clipboard.writeText(code.code);
     setCode({ ...code, copied: !code.copied });
@@ -100,6 +134,19 @@ const Page = () => {
     }, 510);
   };
 
+  const saveChekeds = async(id) => {
+    try {
+      for (const { checked, topic } of topics) {
+        const url = `${ URL_API_ROOT }/api/grouptopics/${ id }/topics/${ topic.id }`;
+        if (checked) {
+          await axios.post(url, null, { withCredentials:true });
+        }
+      }
+    } catch {
+      enqueueSnackbar("error interno del servidor", { variant:"error" });
+    }
+  };
+
   const handleStep2 = async() => {
     const payload = {
       title,
@@ -111,6 +158,8 @@ const Page = () => {
     const response = await sendGroup(payload);
     if (response.success){
       setCode({ ...code, code: response.code } );
+      console.log(response);
+      saveChekeds(response.id);
       enqueueSnackbar("Curso Creado Exitosamente", { variant:"success" });
       handleStepChange(2);
     } else {
@@ -201,7 +250,22 @@ const Page = () => {
             <Typography variant="h6">
               Configuracion de Tópicos
             </Typography>
-            Acá configuramos los topicos que se verán
+            <Typography variant="body2" sx={{ color: "background.contrastText", mb: 2 }}>
+              Lista de Tópicos
+            </Typography>
+            { topics.map(({ checked, topic }) => <Box key={ `${ topic.id }b` }
+              display="flex"
+              alignItems="center"
+              gap="15px"
+              width="100%"
+            >
+              <Checkbox checked={checked} onChange={ () => setCheckedF(topic.id) }/>
+              <AcordionData
+                key={ `${topic.id}topicC` }
+                title={ topic.title }
+                description={ topic.description }
+                startDate={ topic.startDate }
+                content={ topic.content } /></Box>) }
             <Box width="100%" justifyContent="space-between" display="flex" mt={ 3 }>
               <ButtonCustom onClick={ () => handleStepChange(0) }>
                 <ArrowLeft />Volver

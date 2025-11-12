@@ -122,6 +122,7 @@ const UserManagementPage = () => {
   const roleLabelMap = useMemo(() => ({
     admin: "Administrador",
     teacher: "Profesores",
+    editor: "Editor",
     student: "Estudiantes",
   }), []);
 
@@ -149,6 +150,7 @@ const UserManagementPage = () => {
       { id: 1, name: "student", label: "Estudiantes" },
       { id: 2, name: "teacher", label: "Profesores" },
       { id: 3, name: "admin", label: "Administrador" },
+      { id: 4, name: "editor", label: "Editor" },
     ];
   }, [roles, users, roleLabelMap]);
 

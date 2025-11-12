@@ -9,10 +9,7 @@ class TopicRepository {
 
     return await this._prisma.topic.create({
       data: {
-        title: topicData.title,
-        description: topicData.description,
-        startDate: topicData.startDate,
-        endDate: topicData.endDate,
+        ...topicData,
       },
     });
 
@@ -23,8 +20,50 @@ class TopicRepository {
       orderBy: {
         startDate:"asc",
       },
+      include:{
+        content:true,
+      },
     });
   }
+
+  async updateTopic(id, topicData) {
+    const updatedTopic = await this._prisma.topic.update({
+      where: { id: id },
+      data: {
+        ...topicData,
+      },
+    });
+
+    return updatedTopic;
+  }
+
+  async getTopic(id) {
+    const topic = await this._prisma.topic.findUnique({
+      where:{ id:id },
+    });
+
+    return topic;
+  }
+
+  async deleteTopic(id) {
+    try {
+      await this._prisma.topic.delete({
+        where: { id:id },
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async getTopicTeacher(idTutor) {
+    const topics = await this._prisma.topic.findMany({
+      where: { idTutor:idTutor },
+    });
+
+    return topics;
+  }
+
 }
 
 module.exports = TopicRepository;

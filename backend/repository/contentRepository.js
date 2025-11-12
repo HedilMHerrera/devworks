@@ -9,12 +9,9 @@ class ContentRepository {
 
     return await this._prisma.content.create({
       data: {
-        title: contentData.title,
-        type: contentData.type,
-        statement: contentData.statement,
+        ...contentData,
       },
     });
-
   }
 
   async getAllContent() {
@@ -23,8 +20,39 @@ class ContentRepository {
 
   async getContentById(id) {
     return await this._prisma.content.findUnique({
-      where: { idContent: id },
+      where: { id: id },
     });
+  }
+
+  async updateContent(id, contentData) {
+    const updatedContent = await this._prisma.content.update({
+      where: { id: id },
+      data: {
+        ...contentData,
+      },
+    });
+
+    return updatedContent;
+  }
+
+  async getContentTopics(idTopic) {
+    const contents = await this._prisma.content.findMany({
+      where: { idTopic:idTopic },
+    });
+
+    return contents;
+  }
+
+  async deleteContent(id) {
+    try {
+      await this._prisma.content.delete({
+        where:{ id },
+      });
+
+      return true;
+    } catch {
+      return false;
+    }
   }
 }
 

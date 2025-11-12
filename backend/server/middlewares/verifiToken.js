@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = process.env.JWT_SECRET || "secret";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 function verifyToken(req, res, next) {
   const token = req.cookies.authToken;
@@ -10,10 +10,6 @@ function verifyToken(req, res, next) {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
-    if (process.env.NODE_ENV !== "test") {
-      // eslint-disable-next-line no-console
-      console.log(req.user);
-    }
     next();
   } catch (error) {
     return res.status(403).send(error.message);

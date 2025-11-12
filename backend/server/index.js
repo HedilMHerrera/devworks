@@ -21,6 +21,8 @@ const routerUser = require("./Routers/user");
 const routerGroup = require("./Routers/groups");
 const routerAdmin = require("./Routers/admin");
 const routerTopic = require("./Routers/topic");
+const routerContent = require("./Routers/content");
+const routerGroupTopics = require("./Routers/groupTopics");
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -37,6 +39,8 @@ app.use("", routerUser);
 app.use("", routerGroup);
 app.use("", routerAdmin);
 app.use("/api/topic", routerTopic);
+app.use("/api/content", routerContent);
+app.use("/api/grouptopics", routerGroupTopics);
 
 app.post("/login", async(req, res) => {
   try {

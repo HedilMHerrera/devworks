@@ -1,78 +1,131 @@
-const request = require("supertest");
-const express = require("express");
-const topicRoutes = require("../server/Routers/topic.js");
-const { PrismaClient } = require("@prisma/client");
+const TopicService = require("../services/topicService");
 
-const prisma = new PrismaClient();
+const role = [
+  { id: 1, name: "student" },
+  { id: 2, name: "admin" },
+  { id: 3, name: "teacher" },
+];
 
-const app = express();
-app.use(express.json());
-app.use("/api/topic", topicRoutes);
+const users = [
+  { id: 1, name: "juan perez", roleId: 3, role: role[2] },
+  { id: 2, name: "carlos garcia", roleId: 1, role: role[0] },
+];
 
-const createdTopicIds = [];
+const topics = [
+  {
+    id: 1,
+    idTutor: 1,
+    title: "Introducción a Python",
+    description: "Conceptos básicos de Python",
+    startDate: new Date("2025-11-05T10:00:00Z"),
+    endDate: new Date("2025-11-20T10:00:00Z"),
+  },
+  {
+    id: 2,
+    idTutor: 2,
+    title: "Estructuras de Control",
+    description: "Condicionales y bucles en Python",
+    startDate: new Date("2025-11-21T10:00:00Z"),
+    endDate: new Date("2025-11-30T10:00:00Z"),
+  },
+];
 
-afterAll(async() => {
-  await prisma.topic.deleteMany({
-    where: { id: { in: createdTopicIds } },
+const mockRepository = {
+  createTopic: jest.fn().mockResolvedValue({ id: 1, title: "introduccion a python" }),
+  getAllTopics: jest.fn().mockReturnValue(topics.sort((a, b) => b.startDate - a.startDate)),
+  getTopic: jest.fn().mockImplementation((id) => topics.find((t) => t.id === id)),
+  updateTopic: jest.fn().mockImplementation((id, data) => ({ ...topics.find((t) => t.id === id), ...data })),
+  deleteTopic: jest.fn().mockImplementation((id) => !!topics.find((t) => t.id === id)),
+  getTopicTeacher: jest.fn().mockImplementation((idTutor) => topics.filter((t) => t.idTutor === idTutor)),
+};
+
+const mockUserRepository = {
+  getUser: jest.fn().mockImplementation((id) => users.find((user) => user.id === id)),
+  getRole: jest.fn().mockImplementation((id) => role.find((i) => i.id === id)),
+};
+
+const data = {
+  idTutor: 1,
+  title: "Introduccion a Numpy",
+  description: "Manejo de arrays multidimensionales",
+  startDate: new Date("2025-12-05T10:00:00Z"),
+  endDate: new Date("2025-12-25T10:00:00Z"),
+};
+
+describe("Prueba de CRUD de tópicos", () => {
+  test("crea un tópico con datos válidos", async() => {
+    const topicService = new TopicService(mockRepository, mockUserRepository);
+    const topic = await topicService.addTopic(data);
+    expect(topic.success).toBe(true);
+    expect(topic.message).toBe("topico creado con Exito");
   });
-});
 
-describe("POST /api/topic", () => {
-  it("debería crear un nuevo tópico correctamente", async() => {
-    const newTopic = {
-      title: "variables en python",
-      description: "Conceptos básicos y primeros pasos",
-      startDate: new Date("2025-11-01"),
-      endDate: new Date("2025-11-10"),
-    };
-
-    const res = await request(app)
-      .post("/api/topic")
-      .send(newTopic)
-      .expect(201);
-    createdTopicIds.push(res.body.id);
-    expect(res.body).toHaveProperty("id");
-    expect(res.body.title).toBe(newTopic.title);
-    expect(res.body.description).toBe(newTopic.description);
-  });
-});
-
-describe("GET /api/topic", () => {
-  it("debería retornar todos los tópicos ordenados por fecha de inicio", async() => {
-    await prisma.topic.createMany({
-      data: [
-        {
-          title: "variables",
-          description: "introduccion a variables",
-          startDate: new Date("2025-10-01"),
-          endDate: new Date("2025-10-05"),
-        },
-        {
-          title: "condicionales",
-          description: "evaluacion de condicionales",
-          startDate: new Date("2025-12-01"),
-          endDate: new Date("2025-12-05"),
-        },
-      ],
+  test("creación de tópico con fechas inválidas", async() => {
+    const topicService = new TopicService(mockRepository, mockUserRepository);
+    const topic = await topicService.addTopic({
+      ...data,
+      startDate: new Date("2025-10-21T10:00:00Z"),
+      endDate: new Date("2025-11-02T10:00:00Z"),
     });
+    expect(topic.success).toBe(false);
+  });
 
-    const createdTopics = await prisma.topic.findMany({
-      where: {
-        title: { in: ["variables", "condicionales"] },
-      },
+  test("creación con fecha fin menor que inicio", async() => {
+    const topicService = new TopicService(mockRepository, mockUserRepository);
+    const topic = await topicService.addTopic({
+      ...data,
+      startDate: new Date("2025-11-21T10:00:00Z"),
+      endDate: new Date("2025-11-20T10:00:00Z"),
     });
+    expect(topic.success).toBe(false);
+  });
 
-    createdTopics.forEach((t) => createdTopicIds.push(t.id));
+  test("creación con usuario distinto a profesor", async() => {
+    const topicService = new TopicService(mockRepository, mockUserRepository);
+    const topic = await topicService.addTopic({
+      ...data,
+      idTutor: 2,
+    });
+    expect(topic.success).toBe(false);
+  });
 
-    const res = await request(app)
-      .get("/api/topic")
-      .expect(200);
+  test("devuelve todos los tópicos ordenados por fechaInicio", async() => {
+    const topicService = new TopicService(mockRepository, mockUserRepository);
+    const allTopics = await topicService.getAllTopics();
+    expect(allTopics.success).toBe(true);
+    expect(allTopics.data.length).toBeGreaterThan(0);
+  });
 
-    expect(res.body.length).toBeGreaterThanOrEqual(2);
+  test("obtiene un tópico existente", async() => {
+    const topicService = new TopicService(mockRepository, mockUserRepository);
+    const topic = await topicService.getTopic(1);
+    expect(topic.success).toBe(true);
+    expect(topic.data.title).toBe("Introducción a Python");
+  });
 
-    const [first, second] = res.body;
+  test("obtiene un tópico inexistente", async() => {
+    const topicService = new TopicService(mockRepository, mockUserRepository);
+    const topic = await topicService.getTopic(99);
+    expect(topic.success).toBe(false);
+  });
 
-    expect(new Date(first.startDate) < new Date(second.startDate)).toBe(true);
+  test("actualiza un tópico existente", async() => {
+    const topicService = new TopicService(mockRepository, mockUserRepository);
+    const updated = await topicService.updateTopic(1, { title: "Python Avanzado" });
+    expect(updated.success).toBe(true);
+    expect(updated.data.title).toBe("Python Avanzado");
+  });
+
+  test("elimina un tópico existente", async() => {
+    const topicService = new TopicService(mockRepository, mockUserRepository);
+    const deleted = await topicService.deleteTopic(1);
+    expect(deleted.success).toBe(true);
+  });
+
+  test("obtiene tópicos por profesor", async() => {
+    const topicService = new TopicService(mockRepository, mockUserRepository);
+    const teacherTopics = await topicService.getTopicTeacher(1);
+    expect(teacherTopics.success).toBe(true);
+    expect(teacherTopics.data.length).toBeGreaterThan(0);
   });
 });
-

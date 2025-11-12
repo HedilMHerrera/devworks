@@ -1,0 +1,47 @@
+class ContentService {
+  constructor(contentRepository, topicRepository) {
+    this._contentRepository = contentRepository;
+    this._topicRepository = topicRepository;
+  }
+
+  async addContentLog(data) {
+    if (!data.title || !data.type) {
+      return { success: false, message: "Campos obligatorios faltantes" };
+    }
+
+    const topic = await this._topicRepository.getTopic(data.idTopic);
+    if (!topic) {
+      return { success: false, message: "Topico no encontrado" };
+    }
+
+    const existingContents = await this._contentRepository.getContentTopics(data.idTopic);
+    const duplicate = existingContents.find(c => c.title === data.title);
+    if (duplicate) {
+      return { success: false, message: "Contenido duplicado en este tópico" };
+    }
+
+    const content = await this._contentRepository.createContent(data);
+    if (!content) {
+      return { success: false, message: "Error al crear contenido" };
+    }
+
+    return { success: true, message: "Contenido creado con éxito", data: content };
+  }
+
+  async updateContentLog(id, data) {
+    const existing = await this._contentRepository.getContentById(id);
+    if (!existing) {
+      return { success: false, message: "Contenido no existe" };
+    }
+
+    const updated = await this._contentRepository.updateContent(id, data);
+    return { success: true, message: "Contenido actualizado", data: updated };
+  }
+
+  
+}
+
+
+
+
+module.exports= ContentLogService;

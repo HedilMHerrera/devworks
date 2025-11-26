@@ -71,9 +71,21 @@ model Topic {
   endDate DateTime
   content Content[]
   groups GroupTopic[]
+  contentLog ContentLog[] 
 }
 
 model Content {
+  id Int @id @default(autoincrement())
+  topic Topic @relation(fields: [idTopic], references: [id])
+  idTopic Int 
+  title String
+  type String
+  statement String?
+  urlSource String?
+  urlView String?
+  createAt DateTime @default(now())
+}
+model ContentLog{
   id Int @id @default(autoincrement())
   topic Topic @relation(fields: [idTopic], references: [id])
   idTopic Int 

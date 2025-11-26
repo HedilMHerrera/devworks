@@ -9,7 +9,7 @@
     "test": "jest",
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 8080",
     "lint": "eslint . && echo ' ESLint: análisis completado con éxito'"
   },
   "dependencies": {

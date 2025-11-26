@@ -1,4 +1,4 @@
-class ContentService {
+class ContentLogService {
   constructor(contentRepository, topicRepository) {
     this._contentRepository = contentRepository;
     this._topicRepository = topicRepository;
@@ -38,10 +38,6 @@ class ContentService {
     return { success: true, message: "Contenido actualizado", data: updated };
   }
 
-  
 }
-
-
-
 
 module.exports= ContentLogService;

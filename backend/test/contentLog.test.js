@@ -1,4 +1,4 @@
-const ContentLogService = require("../services/contentService");
+const ContentLogService = require("../services/contentLogService");
 
 const contents = [
   {
@@ -39,11 +39,11 @@ describe("Pruebas de servicio de Contenido", () => {
   let contentService;
 
   beforeEach(() => {
-    contentService = new ContentService(mockContentRepo, mockTopicRepo);
+    contentService = new ContentLogService(mockContentRepo, mockTopicRepo);
   });
 
   test("crea un contenido válido", async() => {
-    const result = await contentService.addContent(validContent);
+    const result = await contentService.addContentLog(validContent);
     expect(result.success).toBe(true);
     expect(mockContentRepo.createContent).toHaveBeenCalled();
   });

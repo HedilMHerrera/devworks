@@ -8,7 +8,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "lint": "eslint . && echo '✅ All clean — no errors found.' || echo '❌Lint check failed — please fix the issues above.'"
+    "lint": "eslint . && echo '✔ All clean — no errors found.' || echo '❌Lint check failed — please fix the issues above.'"
   },
   "dependencies": {
     "@prisma/client": "^6.16.3",

@@ -16,15 +16,15 @@ class UserRespository{
     });
 
     if (!user){
-      return false;
+      return null;
     }
 
     if (!user.isVerified && !isVerifiedLogin) {
-      return false;
+      return null;
     }
 
     if (!isVerifiedLogin && user.password && !(await bcrypt.compare(password, user.password))) {
-      return false;
+      return null;
     }
     const roleName = user.role.name;
     const { password: _, role: __, roleId: ___, ...safeUser } = user;

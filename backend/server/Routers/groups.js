@@ -20,7 +20,7 @@ const payloadStruct = {
   endDate:null,
 };
 /* Solo para usuario adminsitrador supongo */
-router.post("/api/groups/create", toBeAdminOrTeacher , async(req,res)=>{
+router.post("/api/groups/create" , async(req,res)=>{
   try {
     const data = { ...payloadStruct, ...req.body };
     const isNull = Object.values(data).some(value => value===null );
@@ -38,7 +38,7 @@ router.post("/api/groups/create", toBeAdminOrTeacher , async(req,res)=>{
   }
 });
 
-router.put("/api/group/update", toBeAdminOrOwner, async(req, res) => {
+router.put("/api/group/update", async(req, res) => {
   try {
     const { id, running, stillValid, idTutor, ...payload } = req.body;
     const newGroup = await groupService.updateGroup(id, payload);
@@ -78,7 +78,7 @@ router.get("/api/groups/teacher", async(req, res) => {
   }
 });
 
-router.get("/api/group/drop/:id", toBeAdminOrOwner, async(req, res) => {
+router.get("/api/group/drop/:id", async(req, res) => {
   const id = parseInt(req.params.id);
   try {
     const group = await groupService.dropGroup(id);
@@ -88,7 +88,7 @@ router.get("/api/group/drop/:id", toBeAdminOrOwner, async(req, res) => {
   }
 });
 
-router.get("/api/group/restore/:id", toBeAdminOrOwner, async(req, res)=>{
+router.get("/api/group/restore/:id", async(req, res)=>{
   const id = parseInt(req.params.id);
   try {
     const response = await groupService.restoreGroup(id);
@@ -108,7 +108,7 @@ router.get("/api/group/:id", async(req, res) => {
   }
 });
 
-router.post("/api/group/delete",toBeAdminOrOwner, async(req, res) => {
+router.post("/api/group/delete", async(req, res) => {
   const payloadStructure = {
     id:null,
     userId: null,

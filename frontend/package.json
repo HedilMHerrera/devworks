@@ -9,7 +9,7 @@
     "test": "jest",
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 8080",
     "lint": "eslint . && echo ' ESLint: análisis completado con éxito'"
   },
   "dependencies": {
@@ -28,6 +28,7 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-pro-sidebar": "^0.7.1",
+    "react-quill-new": "^3.6.0",
     "styled-components": "^6.1.19",
     "supertest": "^7.1.4",
     "zustand": "^5.0.8"

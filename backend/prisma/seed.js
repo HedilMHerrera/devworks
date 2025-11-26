@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const prisma = new PrismaClient();
 
 async function main() {
-  const [adminRol, teacherRol, studentRol] = await Promise.all([
+  const [adminRol, teacherRol, studentRol, editorRol] = await Promise.all([
     prisma.role.upsert({
       where: { name: "admin" },
       update: {},
@@ -18,6 +18,11 @@ async function main() {
       where: { name: "student" },
       update: {},
       create: { name: "student" },
+    }),
+    prisma.role.upsert({
+      where: { name: "editor" },
+      update: {},
+      create: { name: "editor" },
     }),
   ]);
   const passwordHash = await bcrypt.hash("123456", 10);
@@ -46,6 +51,14 @@ async function main() {
         email: "student@example.com",
         password: passwordHash,
         roleId: studentRol.id,
+        isVerified:true,
+      },
+      {
+        name: "editor",
+        lastName: "user",
+        email: "editor@example.com",
+        password: passwordHash,
+        roleId: editorRol.id,
         isVerified:true,
       },
     ],

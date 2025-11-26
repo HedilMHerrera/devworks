@@ -93,5 +93,44 @@ export const menuItems = {
       route: "/user/ReportesGrupos",
       description: "Genera y consulta reportes detallados sobre los grupos y su desempeño.",
     },
+    {
+      name: "Crear Topicos",
+      Icon: AssessmentIcon,
+      route: "/user/cursos",
+      description: "crea gestiona los topicos.",
+    },
+  ],
+
+  "editor": [
+    {
+      name: "Mis Cursos",
+      Icon: ViewInArIcon,
+      route: "/user/MisCursos",
+      description: "Consulta y gestiona los cursos que impartes dentro de la plataforma.",
+    },
+    {
+      name: "Evaluaciones",
+      Icon: ArticleIcon,
+      route: "/user/Evaluaciones",
+      description: "Crea, edita y califica evaluaciones para los estudiantes de tus cursos.",
+    },
+    {
+      name: "Estudiantes",
+      Icon: PeopleOutlineIcon,
+      route: "/user/Estudiantes",
+      description: "Accede a la lista de estudiantes y monitorea su rendimiento académico.",
+    },
+    {
+      name: "Reportes Grupos",
+      Icon: AssessmentIcon,
+      route: "/user/ReportesGrupos",
+      description: "Genera y consulta reportes detallados sobre los grupos y su desempeño.",
+    },
+    {
+      name: "Gestión de Tópicos",
+      Icon: ArticleIcon,
+      route: "/user/gestionDeTopicos",
+      description: "Administra fácilmente los tópicos y contenidos relacionados con tus cursos.",
+    },
   ],
 };

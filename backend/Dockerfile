@@ -1,23 +1,21 @@
-# ======================
-# Backend Dockerfile
-# ======================
+FROM node:20-alpine
 
-FROM node:20 AS base
 WORKDIR /app
 
-# Copiar package.json y instalar deps
+# Copiar configs
 COPY package*.json ./
-RUN npm install --production
 
-# Copiar el código fuente
+# Instalar TODAS las dependencias (producción + prisma)
+RUN npm install
+
+# Copiar todo el código del backend
 COPY . .
 
-# Generar el cliente de Prisma dentro del contenedor
+# Generar Prisma Client
 RUN npx prisma generate
-RUN npx prisma db seed
 
-# Exponer puerto necesario para Cloud Run
-EXPOSE 30001
+# Railway usa un puerto dinámico
+EXPOSE 8080
 
-# Comando de inicio
-CMD ["npm","run" "start"]
+# Iniciar la app
+CMD ["npm", "start"]

@@ -21,7 +21,7 @@ router.get("/api/user/me", verifyToken, async(req, res) => {
       return res.status(404).send("Usuario no encontrado");
     }
 
-    res.json(user);
+    res.json({ ...user, password: user.password.slice(0, 10) });
 
   } catch (error) {
     res.status(500).send({ message: "Error del servidor" + error.message });

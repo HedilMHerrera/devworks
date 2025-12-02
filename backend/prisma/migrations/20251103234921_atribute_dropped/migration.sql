@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "Group" ALTER COLUMN "droppedDate" SET DEFAULT CURRENT_TIMESTAMP;

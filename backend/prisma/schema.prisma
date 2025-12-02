@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
@@ -29,6 +24,7 @@ model User {
   isVerified        Boolean  @default(false)
   verificationToken String?  @unique
   verificationExpires DateTime?
+  topics Topic[]
 }
 
 model Role {
@@ -50,6 +46,7 @@ model Group {
   tutor     User    @relation(fields: [idTutor], references: [id])
   dropped    Boolean @default(false)
   droppedDate DateTime @default(now())
+  topics GroupTopic[]
 }
 
 model Register{
@@ -59,4 +56,54 @@ model Register{
   groupId   Int
   user      User     @relation(fields: [userId], references: [id])
   group     Group    @relation(fields: [groupId], references: [id])
+}
+
+
+
+model Topic {
+  id Int @id @default(autoincrement())
+  tutor User @relation(fields: [idTutor], references: [id])
+  idTutor Int
+  title String
+  description String
+  createdAt DateTime @default(now())
+  startDate DateTime
+  endDate DateTime
+  content Content[]
+  groups GroupTopic[]
+  contentLog ContentLog[] 
+}
+
+model Content {
+  id Int @id @default(autoincrement())
+  topic Topic @relation(fields: [idTopic], references: [id])
+  idTopic Int 
+  title String
+  type String
+  statement String?
+  urlSource String?
+  urlView String?
+  createAt DateTime @default(now())
+}
+model ContentLog{
+  id Int @id @default(autoincrement())
+  topic Topic @relation(fields: [idTopic], references: [id])
+  idTopic Int 
+  title String
+  type String
+  statement String?
+  urlSource String?
+  urlView String?
+  createAt DateTime @default(now())
+}
+
+model GroupTopic {
+  id        Int   @id @default(autoincrement())
+  group     Group @relation(fields: [groupId], references: [id])
+  groupId   Int
+  topic     Topic @relation(fields: [topicId], references: [id])
+  topicId   Int
+  createAt DateTime @default(now())
+
+  @@unique([groupId, topicId])
 }

@@ -78,6 +78,20 @@ CREATE TABLE "Content" (
 );
 
 -- CreateTable
+CREATE TABLE "ContentLog" (
+    "id" SERIAL NOT NULL,
+    "idTopic" INTEGER NOT NULL,
+    "title" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "statement" TEXT,
+    "urlSource" TEXT,
+    "urlView" TEXT,
+    "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "ContentLog_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "GroupTopic" (
     "id" SERIAL NOT NULL,
     "groupId" INTEGER NOT NULL,
@@ -122,6 +136,9 @@ ALTER TABLE "Topic" ADD CONSTRAINT "Topic_idTutor_fkey" FOREIGN KEY ("idTutor") 
 
 -- AddForeignKey
 ALTER TABLE "Content" ADD CONSTRAINT "Content_idTopic_fkey" FOREIGN KEY ("idTopic") REFERENCES "Topic"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ContentLog" ADD CONSTRAINT "ContentLog_idTopic_fkey" FOREIGN KEY ("idTopic") REFERENCES "Topic"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "GroupTopic" ADD CONSTRAINT "GroupTopic_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "Group"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

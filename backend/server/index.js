@@ -43,7 +43,7 @@ app.use("/api/topic", routerTopic);
 app.use("/api/content", routerContent);
 app.use("/api/grouptopics", routerGroupTopics);
 
-app.post("/login", async(req, res) => {
+app.post("/login", async (req, res) => {
   try {
     const email = req.body.email;
     const pass = req.body.password;
@@ -75,7 +75,7 @@ app.post("/logout", (req, res) => {
   );
 });
 
-app.post("/logingoogle", async(req, res) => {
+app.post("/logingoogle", async (req, res) => {
   try {
     const tokenUser = req.body.token;
     if (!tokenUser) {
@@ -100,20 +100,20 @@ app.post("/logingoogle", async(req, res) => {
   }
 });
 
-app.get("/check-email", async(req, res) => {
+app.get("/check-email", async (req, res) => {
   try {
     const email = req.query.email;
-    if (!email) {return res.status(400).json({ message: "Email requerido" });}
+    if (!email) { return res.status(400).json({ message: "Email requerido" }); }
 
     const user = await repository.findByEmail(email);
-    if (user) {return res.status(409).json({ message: "El email ya esta registrado" });}
+    if (user) { return res.status(409).json({ message: "El email ya esta registrado" }); }
     return res.status(200).json({ message: "Email disponible" });
   } catch (e) {
     return res.status(500).json({ message: `Error interno del servidor: ${e.message}` });
   }
 });
 
-app.get("/check-verification-status", async(req, res) => {
+app.get("/check-verification-status", async (req, res) => {
   try {
     const { email } = req.query;
     const user = await repository.findByEmail(email);
@@ -123,11 +123,15 @@ app.get("/check-verification-status", async(req, res) => {
   }
 });
 
-app.post("/register", async(req, res) => {
+app.post("/register", async (req, res) => {
   try {
     const { email } = req.body;
 
     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+    console.log("email process", process.env.EMAIL_USER);
+    console.log("email PASS", process.env.EMAIL_PASS);
+    console.log("email: ", email);
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
@@ -144,9 +148,16 @@ app.post("/register", async(req, res) => {
         </div>
       `,
     };
+    console.log("---------------------------------------------------------------------------------------------------------");
+    console.log("email2 process", process.env.EMAIL_USER);
+    console.log("email2 PASS", process.env.EMAIL_PASS);
+    console.log("email2: ", email);
 
     await transporter.sendMail(mailOptions);
-
+    console.log("---------------------------------------------------------------------------------------------------------");
+    console.log("email3 process", process.env.EMAIL_USER);
+    console.log("email3 PASS", process.env.EMAIL_PASS);
+    console.log("email3: ", email);
     return res.status(200).json({
       message: "Código de verificación enviado.",
       verificationCode: verificationCode,
@@ -159,7 +170,7 @@ app.post("/register", async(req, res) => {
   }
 });
 
-app.post("/verify-email", async(req, res) => {
+app.post("/verify-email", async (req, res) => {
 
   try {
     const existingUser = await repository.findByEmail(req.body.email);

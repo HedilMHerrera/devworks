@@ -12,6 +12,8 @@ import Charging from "./components/Charging";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+console.log("google: ",GOOGLE_CLIENT_ID);
+
 export default function RootLayout({ children }) {
   return (
     <html lang="es">

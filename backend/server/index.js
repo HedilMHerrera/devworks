@@ -11,10 +11,12 @@ const routerTopic = require("./Routers/topic");
 const routerContent = require("./Routers/content");
 const routerGroupTopics = require("./Routers/groupTopics");
 const app = express();
+const { Resend } = require("resend");
 
 const cookieParser = require("cookie-parser");
 const MAX_TIME = 1000;
 const nodemailer = require("nodemailer");
+const resend = new Resend(process.env.RESEND_KEY);
 app.use(cookieParser());
 
 console.log(process.env.VIEW_DIRECTION);
@@ -129,10 +131,6 @@ app.post("/register", async(req, res) => {
 
     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-    console.log("email process", process.env.EMAIL_USER);
-    console.log("email PASS", process.env.EMAIL_PASS);
-    console.log("email: ", email);
-
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
@@ -148,16 +146,7 @@ app.post("/register", async(req, res) => {
         </div>
       `,
     };
-    console.log("---------------------------------------------------------------------------------------------------------");
-    console.log("email2 process", process.env.EMAIL_USER);
-    console.log("email2 PASS", process.env.EMAIL_PASS);
-    console.log("email2: ", email);
-
-    await transporter.sendMail(mailOptions);
-    console.log("---------------------------------------------------------------------------------------------------------");
-    console.log("email3 process", process.env.EMAIL_USER);
-    console.log("email3 PASS", process.env.EMAIL_PASS);
-    console.log("email3: ", email);
+    await resend.emails.send(mailOptions);
     return res.status(200).json({
       message: "Código de verificación enviado.",
       verificationCode: verificationCode,

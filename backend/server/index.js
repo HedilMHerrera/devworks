@@ -132,8 +132,8 @@ app.post("/register", async(req, res) => {
     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
     const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
+      from: `PyCraft <${process.env.EMAIL_USER}>`,
+      to: [email],
       subject: "Verifica tu cuenta de PyCraft",
       html: `
         <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px; color: #333; background-color: #f4f4f4;">

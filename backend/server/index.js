@@ -1,19 +1,6 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const app = express();
-const VIEW_DIRECTION = "http://localhost:3000";
-
-const cookieParser = require("cookie-parser");
-const MAX_TIME = 1000;
-const nodemailer = require("nodemailer");
-app.use(cookieParser());
-app.use(cors({
-  origin: VIEW_DIRECTION,
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-}));
-
 const AuthenticacionService = require("../services/authenticationService");
 const UserRepository = require("../repository/userRepository");
 const bcrypt = require("bcrypt");
@@ -23,6 +10,20 @@ const routerAdmin = require("./Routers/admin");
 const routerTopic = require("./Routers/topic");
 const routerContent = require("./Routers/content");
 const routerGroupTopics = require("./Routers/groupTopics");
+const app = express();
+
+const cookieParser = require("cookie-parser");
+const MAX_TIME = 1000;
+const nodemailer = require("nodemailer");
+app.use(cookieParser());
+
+console.log(process.env.VIEW_DIRECTION);
+
+app.use(cors({
+  origin: process.env.VIEW_DIRECTION,
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+}));
 
 const transporter = nodemailer.createTransport({
   service: "gmail",

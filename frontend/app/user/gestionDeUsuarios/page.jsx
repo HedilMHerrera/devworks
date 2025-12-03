@@ -38,8 +38,7 @@ import EditUserModal from "./components/EditUserModal";
 import DeleteConfirmModal from "./components/DeleteConfirmModal";
 import { getRoleDisplay, getRoleColor } from "./utils/roleUtils";
 import { useSessionZ } from "../../context/SessionContext";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:30001";
+import { URL_API_ROOT } from "@/app/redirections";
 
 const UserManagementPage = () => {
   const sessionUser = useSessionZ((s) => s.user);
@@ -72,7 +71,7 @@ const UserManagementPage = () => {
 
   const fetchUsers = async() => {
     try {
-      const response = await fetch(`${API_URL}/api/admin/users`, {
+      const response = await fetch(`${ URL_API_ROOT }/api/admin/users`, {
         credentials: "include",
       });
       const data = await response.json();
@@ -100,7 +99,7 @@ const UserManagementPage = () => {
       await fetchUsers();
 
       try {
-        const response = await fetch(`${API_URL}/api/admin/roles`, {
+        const response = await fetch(`${ URL_API_ROOT }/api/admin/roles`, {
           credentials: "include",
         });
         const data = await response.json();
@@ -262,7 +261,7 @@ const UserManagementPage = () => {
   const handleUpdateUser = async(userId, roleId) => {
     try {
       setIsUpdating(true);
-      const response = await fetch(`${API_URL}/api/admin/users/${userId}`, {
+      const response = await fetch(`${ URL_API_ROOT }/api/admin/users/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -291,7 +290,7 @@ const UserManagementPage = () => {
     try {
       setIsDeleting(true);
       const ids = usersToDelete.map((u) => u.id);
-      const response = await fetch(`${API_URL}/api/admin/users`, {
+      const response = await fetch(`${ URL_API_ROOT }/api/admin/users`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

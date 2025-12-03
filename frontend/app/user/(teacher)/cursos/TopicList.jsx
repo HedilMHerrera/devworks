@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { Box, Typography, Button, CircularProgress, Grid, Card, CardContent, TextField } from "@mui/material";
 import TopicAccordion from "./components/TopicAccordion";
+import { URL_API_ROOT } from "@/app/redirections";
 import axios from "axios";
 
-const URL_BASE = "http://localhost:30001";
 const TopicList = () => {
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,7 +20,7 @@ const TopicList = () => {
   useEffect(() => {
     const fetchTopics = async() => {
       try {
-        const res = await axios.get(`${URL_BASE}/api/topic`);
+        const res = await axios.get(`${ URL_API_ROOT }/api/topic`);
         setTopics(res.data);
       } catch (err) {
         console.error("Error al cargar tópicos:", err);
@@ -54,7 +54,7 @@ const TopicList = () => {
           : new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString(),
       };
 
-      const res = await axios.post("http://localhost:30001/api/topic", payload);
+      const res = await axios.post(`${ URL_API_ROOT }/api/topic`, payload);
 
       if (res.data && res.data.id) {
         setTopics((prev) => [...prev, res.data]);

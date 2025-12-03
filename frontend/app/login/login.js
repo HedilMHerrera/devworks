@@ -1,13 +1,14 @@
 "use client";
 import axios from "axios";
-const API_URL = "http://localhost:30001";
+import { URL_API_ROOT } from "@/app/redirections";
+const API_URL = URL_API_ROOT;
 
 axios.defaults.withCredentials = true;
 
 export const loginGoogle = async(token) => {
   const payload = { token };
   try {
-    const response = await axios.post(`${API_URL}/logingoogle`, payload, { withCredentials: true });
+    const response = await axios.post(`${ API_URL }/logingoogle`, payload, { withCredentials: true });
     return { success: true, data: response.data, message: "Ingreso Exitoso" };
   } catch (e) {
     if (e.response) {

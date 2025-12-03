@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import ContentHTML from "../../components/ContentHTML";
 import dynamic from "next/dynamic";
 import { useParams, useRouter } from "next/navigation";
-
+import { URL_API_ROOT } from "@/app/redirections";
 import { useSnackbar } from "notistack";
 import axios from "axios";
 import {
@@ -17,6 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import "react-quill-new/dist/quill.snow.css";
+import ContentHtml from "@/app/user/(teacher)/cursos/components/ContentHTML";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
@@ -52,7 +52,7 @@ export default function TopicEditPage() {
         urlSource: "url",
       };
 
-      const res = await axios.post("http://localhost:30001/api/content", contentData);
+      const res = await axios.post(`${URL_API_ROOT}/api/content`, contentData);
 
       if (res.status === 201 || res.data.success) {
         enqueueSnackbar("contenido guardado exitosamente",{ variant:"success" });
@@ -173,7 +173,7 @@ export default function TopicEditPage() {
             <Typography variant="h5" sx={{ color: "white", mb: 2 }}>
               Vista Previa
             </Typography>
-            <ContentHTML topic={ topic }/>
+            <ContentHtml topic={ topic }/>
           </Paper>
         </Grid>
       </Grid>

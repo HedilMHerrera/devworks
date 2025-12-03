@@ -1,12 +1,12 @@
 "use client";
 import axios from "axios";
-const API_URL = "http://localhost:30001";
+import { URL_API_ROOT } from "@/app/redirections";
 
 axios.defaults.withCredentials = true;
 
 export const checkEmail = async(email) => {
   try {
-    const response = await axios.get(`${API_URL}/check-email`, { params: { email } });
+    const response = await axios.get(`${ URL_API_ROOT }/check-email`, { params: { email } });
     return { success: true, message: response.data?.message || "Email disponible" };
   } catch (e) {
     if (e.response) {
@@ -27,7 +27,7 @@ export const register = async(email) => {
     email,
   };
   try {
-    const response = await axios.post(API_URL + "/register", payload, { withCredentials: true });
+    const response = await axios.post(URL_API_ROOT + "/register", payload, { withCredentials: true });
     return { success: true, data: response.data, message: response.data.message };
   } catch (e) {
     if (e.response) {
@@ -53,7 +53,7 @@ export const verifyEmail = async(name, lastName, email, password, code, original
       code,
       originalCode,
     };
-    const response = await axios.post(`${API_URL}/verify-email`, payload, { withCredentials: true });
+    const response = await axios.post(`${ URL_API_ROOT }/verify-email`, payload, { withCredentials: true });
     return { success: true, message: response.data?.message, data: response.data };
   } catch (e) {
     if (e.response) {
@@ -65,7 +65,7 @@ export const verifyEmail = async(name, lastName, email, password, code, original
 
 export const checkVerificationStatus = async(email) => {
   try {
-    const response = await axios.get(`${API_URL}/check-verification-status`, { params: { email } });
+    const response = await axios.get(`${ URL_API_ROOT }/check-verification-status`, { params: { email } });
     return { success: true, isVerified: response.data.isVerified };
   } catch (e) {
     // eslint-disable-next-line no-console

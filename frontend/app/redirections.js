@@ -1,1 +1,1 @@
-export const URL_API_ROOT = "http://localhost:30001";
+export const URL_API_ROOT = process.env.NEXT_PUBLIC_API_URL;

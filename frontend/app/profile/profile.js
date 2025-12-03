@@ -1,9 +1,10 @@
 import axios from "axios";
+import { URL_API_ROOT } from "@/app/redirections";
 
 axios.defaults.withCredentials = true;
 
 const api = axios.create({
-  baseURL: "http://localhost:30001",
+  baseURL: URL_API_ROOT,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",

@@ -91,8 +91,8 @@ app.post("/logingoogle", async(req, res) => {
 
     res.cookie("authToken", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       maxAge: 60 * 60 * MAX_TIME * 24 * 30,
     });
 

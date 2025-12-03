@@ -43,7 +43,7 @@ app.use("/api/topic", routerTopic);
 app.use("/api/content", routerContent);
 app.use("/api/grouptopics", routerGroupTopics);
 
-app.post("/login", async (req, res) => {
+app.post("/login", async(req, res) => {
   try {
     const email = req.body.email;
     const pass = req.body.password;
@@ -75,7 +75,7 @@ app.post("/logout", (req, res) => {
   );
 });
 
-app.post("/logingoogle", async (req, res) => {
+app.post("/logingoogle", async(req, res) => {
   try {
     const tokenUser = req.body.token;
     if (!tokenUser) {
@@ -100,7 +100,7 @@ app.post("/logingoogle", async (req, res) => {
   }
 });
 
-app.get("/check-email", async (req, res) => {
+app.get("/check-email", async(req, res) => {
   try {
     const email = req.query.email;
     if (!email) { return res.status(400).json({ message: "Email requerido" }); }
@@ -113,7 +113,7 @@ app.get("/check-email", async (req, res) => {
   }
 });
 
-app.get("/check-verification-status", async (req, res) => {
+app.get("/check-verification-status", async(req, res) => {
   try {
     const { email } = req.query;
     const user = await repository.findByEmail(email);
@@ -123,7 +123,7 @@ app.get("/check-verification-status", async (req, res) => {
   }
 });
 
-app.post("/register", async (req, res) => {
+app.post("/register", async(req, res) => {
   try {
     const { email } = req.body;
 
@@ -170,7 +170,7 @@ app.post("/register", async (req, res) => {
   }
 });
 
-app.post("/verify-email", async (req, res) => {
+app.post("/verify-email", async(req, res) => {
 
   try {
     const existingUser = await repository.findByEmail(req.body.email);

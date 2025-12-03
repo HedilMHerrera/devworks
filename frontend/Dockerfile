@@ -1,9 +1,4 @@
-# ======================
-# Frontend Dockerfile
-# ======================
-
-# Etapa 1: Build
-FROM node:20 AS builder
+FROM node:20-alpine AS build
 WORKDIR /app
 
 COPY package*.json ./
@@ -12,13 +7,12 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# Etapa 2: Run
-FROM node:20 AS runner
+FROM node:20-alpine AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
-COPY --from=builder /app ./
+COPY --from=build /app ./
 
-EXPOSE 3000
-CMD ["npm","run", "start"]
+EXPOSE 8080
+CMD ["npm", "start"]
